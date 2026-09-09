@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>நாட்காட்டி</title>
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="நாட்காட்டி">
+<meta name="theme-color" content="#0d0f14">
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#0d0f14;
+    --surface:#161922;
+    --surface-2:#1e222e;
+    --line:#2a2f3d;
+    --ink:#eef0f4;
+    --muted:#7c8296;
+    --accent:#34c9a3;
+    --accent-soft:rgba(52,201,163,0.16);
+    --busy:#f5a623;
+    --busy-soft:rgba(245,166,35,0.16);
+    --danger:#ff5470;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; background:var(--bg); color:var(--ink); font-family:'Noto Sans Tamil','Space Grotesk',sans-serif; overscroll-behavior-y:contain;}
+  .app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;}
+
+  header{position:sticky; top:0; z-index:20; background:var(--bg); padding:16px 16px 0; border-bottom:1px solid var(--line);}
+  .top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+  .eyebrow{font-family:'JetBrains Mono',monospace; font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+  h1{font-family:'Noto Sans Tamil',sans-serif; font-size:21px; font-weight:700; margin:2px 0 0;}
+  .tamil-year-chip{
+    font-family:'Noto Sans Tamil',sans-serif; font-size:11.5px; font-weight:600; color:var(--accent);
+    background:var(--accent-soft); padding:5px 10px; border-radius:20px;
+  }
+
+  .nav-row{display:flex; align-items:center; justify-content:space-between; padding-bottom:12px;}
+  .nav-row button{background:var(--surface); border:1px solid var(--line); color:var(--ink); width:32px;height:32px;border-radius:9px; font-size:16px; cursor:pointer; display:flex;align-items:center;justify-content:center;}
+  .nav-row button:active{background:var(--surface-2);}
+  .nav-title{text-align:center;}
+  .nav-title .t-month{font-family:'Noto Sans Tamil',sans-serif; font-weight:700; font-size:17px; color:var(--ink);}
+  .nav-title .g-month{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); margin-top:2px;}
+
+  .view{display:none; flex:1; flex-direction:column; overflow:hidden;}
+  .view.active{display:flex;}
+
+  /* ---- Month grid ---- */
+  #view-month{padding:12px 12px 0;}
+  .weekday-row{display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:6px;}
+  .weekday-row div{text-align:center; font-family:'Noto Sans Tamil',sans-serif; font-size:11px; color:var(--muted); font-weight:600;}
+  .month-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:4px; overflow-y:auto; padding-bottom:16px;}
+  .day-cell{
+    aspect-ratio:1; border-radius:10px; background:var(--surface); border:1px solid var(--line);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
+    cursor:pointer; position:relative; padding:2px;
+  }
+  .day-cell.other-month{opacity:0.25;}
+  .day-cell.today{border-color:var(--accent); border-width:1.5px;}
+  .day-cell:active{background:var(--surface-2);}
+  .day-cell .t-num{font-family:'Noto Sans Tamil',sans-serif; font-weight:700; font-size:15px;}
+  .day-cell .g-num{font-family:'JetBrains Mono',monospace; font-size:8.5px; color:var(--muted);}
+  .day-cell .dot{position:absolute; bottom:4px; width:4px;height:4px;border-radius:50%; background:var(--accent);}
+  .day-cell.holiday{border-color:var(--danger); background:rgba(255,84,112,0.08);}
+  .day-cell.holiday .t-num{color:var(--danger);}
+  .day-cell .holiday-dot{position:absolute; top:5px; right:5px; width:5px;height:5px;border-radius:50%; background:var(--danger);}
+
+  /* ---- Day view ---- */
+  #view-day{flex:1; overflow-y:auto;}
+  .day-header-card{margin:14px 16px; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:14px 16px;}
+  .day-header-card .t-date{font-family:'Noto Sans Tamil',sans-serif; font-size:19px; font-weight:700; color:var(--ink);}
+  .day-header-card .g-date{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); margin-top:4px;}
+  .day-header-card .t-sub{font-family:'Noto Sans Tamil',sans-serif; font-size:12.5px; color:var(--accent); margin-top:6px; font-weight:600;}
+  .holiday-banner{
+    margin-top:10px; padding:8px 12px; border-radius:10px;
+    background:rgba(255,84,112,0.14); border:1px solid rgba(255,84,112,0.4);
+    color:var(--danger); font-size:12.5px; font-weight:600; font-family:'Noto Sans Tamil',sans-serif;
+    display:flex; align-items:center; gap:6px;
+  }
+
+  .section-label{
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--muted); margin:0 16px 8px;
+  }
+
+  .freebusy{margin:0 16px 18px; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:14px;}
+  .fb-track{position:relative; height:26px; background:var(--surface-2); border-radius:8px; overflow:hidden;}
+  .fb-block{position:absolute; top:0; bottom:0; background:var(--busy); opacity:0.85;}
+  .fb-labels{display:flex; justify-content:space-between; margin-top:6px;}
+  .fb-labels span{font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--muted);}
+
+  .event-list{padding:0 16px 100px; display:flex; flex-direction:column; gap:10px;}
+  .event-card{
+    background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--accent);
+    border-radius:12px; padding:12px 14px; display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
+    cursor:pointer;
+  }
+  .event-card:active{background:var(--surface-2);}
+  .event-title{font-weight:600; font-size:14.5px;}
+  .event-time{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); margin-top:2px;}
+  .event-loc{font-size:12px; color:var(--muted); margin-top:3px;}
+  .event-del{background:none; border:none; color:var(--muted); font-size:18px; cursor:pointer; padding:2px 6px;}
+  .empty-state{margin:30px 16px; text-align:center; color:var(--muted); font-size:13px; line-height:1.6;}
+
+  .fab{
+    position:fixed; bottom:24px; right:calc(50% - 240px + 20px); max-width:480px;
+    width:56px; height:56px; border-radius:50%; background:var(--accent); color:#0d0f14;
+    border:none; font-size:26px; font-weight:700; cursor:pointer; box-shadow:0 6px 18px rgba(52,201,163,0.35);
+    display:flex; align-items:center; justify-content:center; z-index:30;
+  }
+  @media (max-width:520px){ .fab{right:20px;} }
+
+  /* ---- Modal ---- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:50;
+    display:none; align-items:flex-end; justify-content:center;
+  }
+  .modal-overlay.active{display:flex;}
+  .modal{
+    background:var(--surface); width:100%; max-width:480px; border-radius:20px 20px 0 0;
+    padding:20px 18px calc(20px + env(safe-area-inset-bottom)); border-top:1px solid var(--line);
+  }
+  .modal h2{font-family:'Noto Sans Tamil',sans-serif; font-size:17px; margin:0 0 16px;}
+  .field{margin-bottom:14px;}
+  .field label{font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); display:block; margin-bottom:6px;}
+  .field input, .field select{
+    width:100%; background:var(--surface-2); border:1px solid var(--line); color:var(--ink);
+    padding:11px 12px; border-radius:10px; font-size:14px; font-family:inherit;
+  }
+  .field-row{display:flex; gap:10px;}
+  .field-row .field{flex:1;}
+  .modal-actions{display:flex; gap:10px; margin-top:6px;}
+  .btn{flex:1; padding:13px; border-radius:12px; border:none; font-weight:600; font-size:14px; cursor:pointer; font-family:inherit;}
+  .btn-primary{background:var(--accent); color:#0d0f14;}
+  .btn-secondary{background:var(--surface-2); color:var(--ink); border:1px solid var(--line);}
+
+  nav.tabbar{display:flex; border-top:1px solid var(--line); background:var(--bg); padding:8px 12px calc(10px + env(safe-area-inset-bottom));}
+  .tab-btn{flex:1; background:none; border:none; color:var(--muted); display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 0; cursor:pointer; font-family:'Noto Sans Tamil',sans-serif; font-size:11px; font-weight:500;}
+  .tab-btn.active{color:var(--ink);}
+  .tab-btn svg{width:20px;height:20px;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="top-row">
+      <div>
+        <div class="eyebrow">தமிழ் நாட்காட்டி</div>
+        <h1>நாட்காட்டி</h1>
+      </div>
+      <div class="tamil-year-chip" id="tamil-year-chip">விசுவாவசு</div>
+    </div>
+    <div class="nav-row" id="month-nav">
+      <button id="prev-month">&#8249;</button>
+      <div class="nav-title">
+        <div class="t-month" id="t-month-label">சித்திரை</div>
+        <div class="g-month" id="g-month-label">April 2026</div>
+      </div>
+      <button id="next-month">&#8250;</button>
+    </div>
+    <div class="nav-row" id="day-nav" style="display:none;">
+      <button id="prev-day">&#8249;</button>
+      <div class="nav-title">
+        <div class="t-month" id="d-tamil-label">சித்திரை 1</div>
+        <div class="g-month" id="d-date-label">14 April</div>
+      </div>
+      <button id="next-day">&#8250;</button>
+    </div>
+  </header>
+
+  <!-- MONTH VIEW -->
+  <div class="view active" id="view-month">
+    <div class="weekday-row" id="weekday-row"></div>
+    <div class="month-grid" id="month-grid"></div>
+  </div>
+
+  <!-- DAY VIEW -->
+  <div class="view" id="view-day">
+    <div class="day-header-card">
+      <div class="t-date" id="dh-tdate">சித்திரை 1, திங்கள்</div>
+      <div class="g-date" id="dh-gdate">Tuesday, 14 April 2026</div>
+      <div class="t-sub" id="dh-tsub">தமிழ் ஆண்டு: விசுவாவசு</div>
+      <div class="holiday-banner" id="holiday-banner" style="display:none;">🎉 <span id="holiday-name"></span></div>
+    </div>
+
+    <div class="section-label">Free / Busy · 6 AM – 11 PM</div>
+    <div class="freebusy">
+      <div class="fb-track" id="fb-track"></div>
+      <div class="fb-labels"><span>6 AM</span><span>2 PM</span><span>11 PM</span></div>
+    </div>
+
+    <div class="section-label">Meetings & Reminders</div>
+    <div class="event-list" id="event-list"></div>
+  </div>
+
+  <button class="fab" id="fab-add">+</button>
+
+  <nav class="tabbar">
+    <button class="tab-btn active" data-tab="month">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+      மாதம்
+    </button>
+    <button class="tab-btn" data-tab="day">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+      தினம்
+    </button>
+  </nav>
+</div>
+
+<!-- Add/Edit Event Modal -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <h2 id="modal-title">புதிய நிகழ்வு</h2>
+    <div class="field">
+      <label>தலைப்பு / Title</label>
+      <input type="text" id="f-title" placeholder="எ.கா. குழு கூட்டம்">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>தொடக்க நேரம்</label>
+        <input type="time" id="f-start" value="10:00">
+      </div>
+      <div class="field">
+        <label>முடிவு நேரம்</label>
+        <input type="time" id="f-end" value="11:00">
+      </div>
+    </div>
+    <div class="field">
+      <label>இடம் (விருப்பம்)</label>
+      <input type="text" id="f-location" placeholder="எ.கா. அலுவலகம்">
+    </div>
+    <div class="field">
+      <label>நினைவூட்டல்</label>
+      <select id="f-reminder">
+        <option value="0">நேரத்தில்</option>
+        <option value="10">10 நிமிடம் முன்</option>
+        <option value="30" selected>30 நிமிடம் முன்</option>
+        <option value="60">1 மணி முன்</option>
+        <option value="1440">1 நாள் முன்</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" id="modal-cancel">ரத்து</button>
+      <button class="btn btn-primary" id="modal-save">சேமி</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============ Tamil calendar data ============
+const TAMIL_MONTHS = [
+  {name:'சித்திரை', start:[4,14]}, {name:'வைகாசி', start:[5,15]}, {name:'ஆனி', start:[6,15]},
+  {name:'ஆடி', start:[7,17]}, {name:'ஆவணி', start:[8,17]}, {name:'புரட்டாசி', start:[9,17]},
+  {name:'ஐப்பசி', start:[10,18]}, {name:'கார்த்திகை', start:[11,16]}, {name:'மார்கழி', start:[12,16]},
+  {name:'தை', start:[1,14]}, {name:'மாசி', start:[2,13]}, {name:'பங்குனி', start:[3,14]}
+];
+const TAMIL_WEEKDAYS = ['ஞாயிறு','திங்கள்','செவ்வாய்','புதன்','வியாழன்','வெள்ளி','சனி'];
+const TAMIL_WEEKDAYS_SHORT = ['ஞா','தி','செ','பு','வி','வெ','ச'];
+const TAMIL_YEAR_CYCLE = ['பிரபவ','விபவ','சுக்ல','பிரமோதூத','பிரஜோத்பத்தி','ஆங்கீரச','ஸ்ரீமுக','பவ','யுவ','தாது',
+  'ஈஸ்வர','வெகுதான்ய','பிரமாதி','விக்கிரம','விஷு','சித்திரபானு','சுபானு','தாரண','பார்த்திப','வியய',
+  'சர்வசித்து','சர்வதாரி','விரோதி','விக்ருதி','கர','நந்தன','விஜய','ஜய','மன்மத','துன்முகி',
+  'ஹேவிளம்பி','விளம்பி','விகாரி','சார்வரி','பிலவ','சுபகிருது','சோபகிருது','குரோதி','விசுவாவசு','பராபவ',
+  'பிலவங்க','கீலக','சௌமிய','சாதாரண','விரோதிகிருது','பரிதாபி','பிரமாதீச','ஆனந்த','ராட்சச','நள',
+  'பிங்களை','காளயுக்தி','சித்தார்த்தி','ரௌத்திரி','துன்மதி','துந்துபி','ருத்ரோத்காரி','ரக்தாட்சி','குரோதன','அட்சய'];
+// Anchor: Tamil year starting April 2025 = விசுவாவசு (index 38, 0-based)
+function tamilYearName(gregDate){
+  const y = gregDate.getMonth()+1 >= 4 && (gregDate.getMonth()>3 || (gregDate.getMonth()===3 && gregDate.getDate()>=14))
+    ? gregDate.getFullYear() : gregDate.getFullYear()-1;
+  let idx = (38 + (y - 2025)) % 60;
+  if(idx<0) idx += 60;
+  return TAMIL_YEAR_CYCLE[idx];
+}
+function tamilMonthInfo(gregDate){
+  // find which tamil month window this date falls in
+  const y = gregDate.getFullYear();
+  const boundaries = TAMIL_MONTHS.map((m,i)=>{
+    let by = y;
+    if(m.start[0] < 4) by = y; // Jan-Mar months belong to same greg year
+    return {idx:i, name:m.name, date:new Date(by, m.start[0]-1, m.start[1])};
+  });
+  // adjust so boundaries are sorted chronologically starting from Chithirai(April) of appropriate year
+  let ordered = [];
+  TAMIL_MONTHS.forEach((m,i)=>{
+    let by = (m.start[0] >= 4) ? y : y; // placeholder, refine below
+  });
+  // Build a full sorted list spanning prev-Dec..this-year for safe lookup
+  let list = [];
+  for(let yy=y-1; yy<=y+1; yy++){
+    TAMIL_MONTHS.forEach((m,i)=>{
+      list.push({idx:i, name:m.name, date:new Date(yy, m.start[0]-1, m.start[1])});
+    });
+  }
+  list.sort((a,b)=>a.date-b.date);
+  let current = list[0];
+  for(const item of list){
+    if(item.date <= gregDate) current = item; else break;
+  }
+  const dayNum = Math.floor((gregDate - current.date)/86400000) + 1;
+  return {name:current.name, day:dayNum};
+}
+
+// ============ State ============
+let monthCursor = new Date(); monthCursor.setDate(1); monthCursor.setHours(0,0,0,0);
+let selectedDate = new Date(); selectedDate.setHours(0,0,0,0);
+let activeTab = 'month';
+let editingEventId = null;
+
+function dateKey(d){ return 'event:' + d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+function isSameDay(a,b){ return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
+function isToday(d){ return isSameDay(d, new Date()); }
+
+async function getEvents(d){
+  try{
+    const raw = localStorage.getItem(dateKey(d));
+    return raw ? JSON.parse(raw) : [];
+  }catch(e){ console.error('read failed', e); return []; }
+}
+async function saveEvents(d, events){
+  try{ localStorage.setItem(dateKey(d), JSON.stringify(events)); }
+  catch(e){ console.error('save failed', e); }
+}
+
+// ============ Festivals & Government Holidays ============
+// Fixed-date holidays that repeat every year
+const FIXED_HOLIDAYS = [
+  {month:1, day:1,  name:'புத்தாண்டு தினம்'},
+  {month:1, day:14, name:'போகி'},
+  {month:1, day:15, name:'தைப் பொங்கல்'},
+  {month:1, day:16, name:'திருவள்ளுவர் தினம்'},
+  {month:1, day:17, name:'உழவர் திருநாள்'},
+  {month:1, day:26, name:'குடியரசு தினம்'},
+  {month:4, day:14, name:'தமிழ்ப் புத்தாண்டு'},
+  {month:5, day:1,  name:'உழைப்பாளர் தினம்'},
+  {month:8, day:15, name:'சுதந்திர தினம்'},
+  {month:10,day:2,  name:'காந்தி ஜெயந்தி'},
+  {month:12,day:25, name:'கிறிஸ்துமஸ்'}
+];
+// Variable-date festivals/holidays — accurate for the year(s) listed; these shift annually
+// (lunar calendar / govt notification), so only populated years shown will display them.
+const VARIABLE_HOLIDAYS = {
+  2026: [
+    {month:2, day:1,  name:'தைப்பூசம்'},
+    {month:3, day:19, name:'தெலுங்கு புத்தாண்டு'},
+    {month:3, day:21, name:'ரம்ஜான்'},
+    {month:3, day:31, name:'மகாவீர் ஜெயந்தி'},
+    {month:4, day:3,  name:'புனித வெள்ளி'},
+    {month:5, day:28, name:'பக்ரீத்'},
+    {month:6, day:26, name:'முஹர்ரம்'},
+    {month:8, day:26, name:'மிலாத் உந் நபி'},
+    {month:9, day:4,  name:'கிருஷ்ண ஜெயந்தி'},
+    {month:9, day:14, name:'விநாயகர் சதுர்த்தி'},
+    {month:10,day:19, name:'ஆயுத பூஜை'},
+    {month:10,day:20, name:'விஜயதசமி'},
+    {month:11,day:8,  name:'தீபாவளி'}
+  ]
+};
+function getHoliday(date){
+  const m = date.getMonth()+1, d = date.getDate(), y = date.getFullYear();
+  const fixed = FIXED_HOLIDAYS.find(h=>h.month===m && h.day===d);
+  if(fixed) return fixed.name;
+  const variable = (VARIABLE_HOLIDAYS[y]||[]).find(h=>h.month===m && h.day===d);
+  if(variable) return variable.name;
+  return null;
+}
+
+// Returns {name, startDate, endDate} for the Tamil month containing refDate
+function getTamilMonthBounds(refDate){
+  const y = refDate.getFullYear();
+  let list = [];
+  for(let yy=y-1; yy<=y+1; yy++){
+    TAMIL_MONTHS.forEach((m,i)=>{
+      list.push({idx:i, name:m.name, date:new Date(yy, m.start[0]-1, m.start[1])});
+    });
+  }
+  list.sort((a,b)=>a.date-b.date);
+  let currentIdx = 0;
+  for(let i=0;i<list.length;i++){
+    if(list[i].date <= refDate) currentIdx = i; else break;
+  }
+  const start = list[currentIdx];
+  const next = list[currentIdx+1];
+  const endDate = new Date(next.date); endDate.setDate(endDate.getDate()-1);
+  return {name:start.name, startDate:start.date, endDate:endDate};
+}
+function formatDateRange(start,end){
+  const s = start.toLocaleDateString(undefined,{day:'numeric', month:'short'});
+  const e = end.toLocaleDateString(undefined,{day:'numeric', month:'short', year:'numeric'});
+  return `${s} – ${e}`;
+}
+
+// ============ Month view ============
+function renderWeekdayRow(){
+  const el = document.getElementById('weekday-row');
+  el.innerHTML = TAMIL_WEEKDAYS_SHORT.map(d=>`<div>${d}</div>`).join('');
+}
+
+async function renderMonthGrid(){
+  const bounds = getTamilMonthBounds(monthCursor);
+  document.getElementById('t-month-label').textContent = bounds.name + ' மாதம்';
+  document.getElementById('g-month-label').textContent = formatDateRange(bounds.startDate, bounds.endDate);
+  document.getElementById('tamil-year-chip').textContent = tamilYearName(monthCursor);
+
+  const grid = document.getElementById('month-grid');
+  grid.innerHTML = '';
+
+  const startOffset = bounds.startDate.getDay();
+  const totalDays = Math.round((bounds.endDate - bounds.startDate)/86400000) + 1;
+
+  const cells = [];
+  for(let i=startOffset-1;i>=0;i--){
+    const d = new Date(bounds.startDate); d.setDate(d.getDate()-1-i);
+    cells.push({date:d, other:true});
+  }
+  for(let i=0;i<totalDays;i++){
+    const d = new Date(bounds.startDate); d.setDate(d.getDate()+i);
+    cells.push({date:d, other:false});
+  }
+  while(cells.length % 7 !== 0){
+    const last = cells[cells.length-1].date;
+    const next = new Date(last); next.setDate(next.getDate()+1);
+    cells.push({date:next, other:true});
+  }
+
+  for(const cell of cells){
+    const tInfo = tamilMonthInfo(cell.date);
+    const holidayName = getHoliday(cell.date);
+    const div = document.createElement('div');
+    div.className = 'day-cell' + (cell.other ? ' other-month':'') + (isToday(cell.date) ? ' today':'') + (holidayName ? ' holiday':'');
+    if(holidayName) div.title = holidayName;
+    div.innerHTML = `<div class="t-num">${tInfo.day}</div><div class="g-num">${cell.date.getDate()}</div>` + (holidayName ? '<div class="holiday-dot"></div>' : '');
+    div.addEventListener('click', ()=>{ selectedDate = new Date(cell.date); switchTab('day'); });
+    grid.appendChild(div);
+
+    // event dot (fire and forget)
+    getEvents(cell.date).then(evts=>{
+      if(evts.length>0){
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        div.appendChild(dot);
+      }
+    });
+  }
+}
+
+// ============ Day view ============
+async function renderDayView(){
+  const gLabel = selectedDate.toLocaleDateString(undefined,{weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  document.getElementById('dh-gdate').textContent = gLabel;
+  document.getElementById('d-date-label').textContent = selectedDate.toLocaleDateString(undefined,{day:'numeric', month:'short'});
+
+  const tInfo = tamilMonthInfo(selectedDate);
+  const tWeekday = TAMIL_WEEKDAYS[selectedDate.getDay()];
+  const tYear = tamilYearName(selectedDate);
+  document.getElementById('d-tamil-label').textContent = `${tInfo.name} ${tInfo.day}`;
+  document.getElementById('dh-tdate').textContent = `${tInfo.name} ${tInfo.day}, ${tWeekday}`;
+  document.getElementById('dh-tsub').textContent = `தமிழ் ஆண்டு: ${tYear}`;
+
+  const holidayName = getHoliday(selectedDate);
+  const banner = document.getElementById('holiday-banner');
+  if(holidayName){
+    document.getElementById('holiday-name').textContent = holidayName;
+    banner.style.display = 'flex';
+  } else {
+    banner.style.display = 'none';
+  }
+
+  const events = await getEvents(selectedDate);
+  events.sort((a,b)=> a.start.localeCompare(b.start));
+
+  // free/busy
+  const fb = document.getElementById('fb-track');
+  fb.innerHTML = '';
+  const dayStartMin = 6*60, dayEndMin = 23*60, span = dayEndMin - dayStartMin;
+  events.forEach(ev=>{
+    const [sh,sm] = ev.start.split(':').map(Number);
+    const [eh,em] = ev.end.split(':').map(Number);
+    let s = sh*60+sm, e = eh*60+em;
+    s = Math.max(s, dayStartMin); e = Math.min(e, dayEndMin);
+    if(e<=s) return;
+    const leftPct = (s-dayStartMin)/span*100;
+    const widthPct = (e-s)/span*100;
+    const block = document.createElement('div');
+    block.className = 'fb-block';
+    block.style.left = leftPct+'%';
+    block.style.width = widthPct+'%';
+    fb.appendChild(block);
+  });
+
+  // event list
+  const list = document.getElementById('event-list');
+  list.innerHTML = '';
+  if(events.length===0){
+    list.innerHTML = '<div class="empty-state">இந்த நாளுக்கு நிகழ்வுகள் இல்லை.<br>கீழே உள்ள + பொத்தானை தட்டவும்.</div>';
+    return;
+  }
+  events.forEach(ev=>{
+    const card = document.createElement('div');
+    card.className = 'event-card';
+    card.innerHTML = `
+      <div style="flex:1">
+        <div class="event-title">${ev.title}</div>
+        <div class="event-time">${to12(ev.start)} – ${to12(ev.end)}</div>
+        ${ev.location ? `<div class="event-loc">📍 ${ev.location}</div>` : ''}
+      </div>
+      <button class="event-del" data-id="${ev.id}">✕</button>
+    `;
+    card.addEventListener('click', (e)=>{
+      if(e.target.classList.contains('event-del')) return;
+      openModal(ev);
+    });
+    card.querySelector('.event-del').addEventListener('click', async (e)=>{
+      e.stopPropagation();
+      const evts = await getEvents(selectedDate);
+      await saveEvents(selectedDate, evts.filter(x=>x.id!==ev.id));
+      renderDayView();
+    });
+    list.appendChild(card);
+  });
+}
+
+function to12(t){
+  let [h,m] = t.split(':').map(Number);
+  const ap = h>=12?'PM':'AM';
+  let h12 = h%12; if(h12===0) h12=12;
+  return `${h12}:${String(m).padStart(2,'0')} ${ap}`;
+}
+
+// ============ Modal ============
+function openModal(event){
+  editingEventId = event ? event.id : null;
+  document.getElementById('modal-title').textContent = event ? 'நிகழ்வை திருத்து' : 'புதிய நிகழ்வு';
+  document.getElementById('f-title').value = event ? event.title : '';
+  document.getElementById('f-start').value = event ? event.start : '10:00';
+  document.getElementById('f-end').value = event ? event.end : '11:00';
+  document.getElementById('f-location').value = event ? (event.location||'') : '';
+  document.getElementById('f-reminder').value = event ? event.reminder : '30';
+  document.getElementById('modal-overlay').classList.add('active');
+}
+function closeModal(){ document.getElementById('modal-overlay').classList.remove('active'); }
+
+document.getElementById('fab-add').addEventListener('click', ()=>{
+  if(activeTab !== 'day'){ switchTab('day'); }
+  openModal(null);
+});
+document.getElementById('modal-cancel').addEventListener('click', closeModal);
+document.getElementById('modal-overlay').addEventListener('click', (e)=>{ if(e.target.id==='modal-overlay') closeModal(); });
+
+document.getElementById('modal-save').addEventListener('click', async ()=>{
+  const title = document.getElementById('f-title').value.trim();
+  if(!title){ return; }
+  const start = document.getElementById('f-start').value;
+  const end = document.getElementById('f-end').value;
+  const location = document.getElementById('f-location').value.trim();
+  const reminder = document.getElementById('f-reminder').value;
+
+  let events = await getEvents(selectedDate);
+  if(editingEventId){
+    events = events.map(ev => ev.id===editingEventId ? {...ev, title, start, end, location, reminder} : ev);
+  } else {
+    events.push({id: Date.now().toString(), title, start, end, location, reminder});
+  }
+  await saveEvents(selectedDate, events);
+  closeModal();
+  renderDayView();
+});
+
+// ============ Navigation ============
+function switchTab(tab){
+  activeTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
+  document.getElementById('view-month').classList.toggle('active', tab==='month');
+  document.getElementById('view-day').classList.toggle('active', tab==='day');
+  document.getElementById('month-nav').style.display = tab==='month' ? 'flex':'none';
+  document.getElementById('day-nav').style.display = tab==='day' ? 'flex':'none';
+  if(tab==='month') renderMonthGrid();
+  if(tab==='day') renderDayView();
+}
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>switchTab(btn.dataset.tab));
+});
+document.getElementById('prev-month').addEventListener('click', ()=>{
+  const b = getTamilMonthBounds(monthCursor);
+  const prev = new Date(b.startDate); prev.setDate(prev.getDate()-1);
+  monthCursor = prev;
+  renderMonthGrid();
+});
+document.getElementById('next-month').addEventListener('click', ()=>{
+  const b = getTamilMonthBounds(monthCursor);
+  const next = new Date(b.endDate); next.setDate(next.getDate()+1);
+  monthCursor = next;
+  renderMonthGrid();
+});
+document.getElementById('prev-day').addEventListener('click', ()=>{ selectedDate.setDate(selectedDate.getDate()-1); renderDayView(); });
+document.getElementById('next-day').addEventListener('click', ()=>{ selectedDate.setDate(selectedDate.getDate()+1); renderDayView(); });
+
+// ============ Init ============
+renderWeekdayRow();
+renderMonthGrid();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed', err));
+  });
+}
+</script>
+</body>
+</html>
