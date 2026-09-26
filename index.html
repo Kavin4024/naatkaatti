@@ -214,6 +214,55 @@
     box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
   }
   .tab-btn svg{width:20px;height:20px;}
+
+  /* ---- Roadmap view ---- */
+  #view-roadmap{flex:1; overflow:hidden;}
+  .rm-scroll{flex:1; overflow-y:auto; padding:16px 16px 100px;}
+  .rm-header-card{
+    display:flex; align-items:center; gap:16px; background:var(--bg); border-radius:20px; padding:16px;
+    box-shadow: 7px 7px 14px var(--shadow-dark), -7px -7px 14px var(--shadow-light);
+    margin-bottom:18px;
+  }
+  .rm-ring-wrap{position:relative; width:64px; height:64px; flex-shrink:0;}
+  .rm-ring-wrap svg{transform:rotate(-90deg);}
+  .rm-ring-bg{fill:none; stroke:var(--shadow-dark); stroke-width:5;}
+  .rm-ring-fg{fill:none; stroke:var(--accent); stroke-width:5; stroke-linecap:round; transition:stroke-dasharray .3s ease;}
+  .rm-ring-label{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600;}
+  .rm-eyebrow{font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);}
+  .rm-phase{font-family:'Noto Sans Tamil',sans-serif; font-size:17px; font-weight:700; margin-top:3px;}
+  .rm-week{font-family:'Noto Sans Tamil',sans-serif; font-size:12.5px; color:var(--accent); margin-top:2px; font-weight:600;}
+
+  .rm-today-card{
+    background:var(--bg); border-radius:18px; padding:16px 18px; margin-bottom:22px;
+    box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light), inset 0 0 0 1.5px rgba(52,201,163,0.25);
+  }
+  .rm-today-day{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--accent); font-weight:600;}
+  .rm-today-title{font-family:'Noto Sans Tamil',sans-serif; font-size:16.5px; font-weight:700; margin-top:5px; line-height:1.4;}
+
+  .rm-week-group{margin-bottom:10px;}
+  .rm-week-summary{
+    list-style:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between;
+    background:var(--bg); border-radius:14px; padding:12px 14px;
+    box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+    font-family:'Noto Sans Tamil',sans-serif; font-size:13.5px; font-weight:600;
+  }
+  .rm-week-summary::-webkit-details-marker{display:none;}
+  .rm-week-summary .rm-week-progress{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); font-weight:500;}
+  .rm-day-row{
+    display:flex; align-items:center; gap:10px; padding:11px 14px; margin-top:6px;
+    border-radius:12px; cursor:pointer;
+  }
+  .rm-day-row:active{ box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); }
+  .rm-day-check{
+    width:20px;height:20px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    background:var(--bg); box-shadow: inset 2px 2px 4px var(--shadow-dark), inset -2px -2px 4px var(--shadow-light);
+  }
+  .rm-day-check svg{width:11px;height:11px; opacity:0;}
+  .rm-day-row.done .rm-day-check{background:var(--accent); box-shadow:none;}
+  .rm-day-row.done .rm-day-check svg{opacity:1;}
+  .rm-day-row.done .rm-day-title{color:var(--muted); text-decoration:line-through;}
+  .rm-day-num{font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); width:34px; flex-shrink:0;}
+  .rm-day-title{font-size:13px; flex:1;}
 </style>
 </head>
 <body>
@@ -277,6 +326,36 @@
     <div class="event-list" id="event-list"></div>
   </div>
 
+  <!-- ROADMAP VIEW -->
+  <div class="view" id="view-roadmap">
+    <div class="rm-scroll">
+      <div class="rm-header-card">
+        <div class="rm-ring-wrap">
+          <svg width="64" height="64" viewBox="0 0 64 64">
+            <circle class="rm-ring-bg" cx="32" cy="32" r="27"></circle>
+            <circle class="rm-ring-fg" id="rm-ring-fg" cx="32" cy="32" r="27" stroke-dasharray="0 170"></circle>
+          </svg>
+          <div class="rm-ring-label" id="rm-ring-label">0/120</div>
+        </div>
+        <div class="rm-header-text">
+          <div class="rm-eyebrow">Data Science பாதை · 6 மாதம்</div>
+          <div class="rm-phase" id="rm-current-phase">Foundations</div>
+          <div class="rm-week" id="rm-current-week">வாரம் 1</div>
+        </div>
+      </div>
+
+      <div class="section-label">இன்றைய தலைப்பு</div>
+      <div class="rm-today-card" id="rm-today-card">
+        <div class="rm-today-day" id="rm-today-day">Day 1</div>
+        <div class="rm-today-title" id="rm-today-title">Data Science அறிமுகம்</div>
+        <button class="btn btn-primary" id="rm-mark-done" style="margin-top:14px;">இன்று முடிந்தது ✓</button>
+      </div>
+
+      <div class="section-label">முழு பாதை · 120 நாட்கள்</div>
+      <div id="rm-weeks-list"></div>
+    </div>
+  </div>
+
   <button class="fab" id="fab-add">+</button>
 
   <nav class="tabbar">
@@ -287,6 +366,10 @@
     <button class="tab-btn" data-tab="day">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
       தினம்
+    </button>
+    <button class="tab-btn" data-tab="roadmap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      பாதை
     </button>
   </nav>
 </div>
@@ -698,15 +781,113 @@ document.getElementById('modal-save').addEventListener('click', async ()=>{
 });
 
 // ============ Navigation ============
+
+// ============ Data Science Roadmap ============
+const RM_TOTAL_DAYS = 120;
+const RM_ROADMAP = [{"d":1,"w":1,"phase":"Foundations","t":"Data Science-அறிமுகம் & career paths"},{"d":2,"w":1,"phase":"Foundations","t":"Python setup, variables, data types"},{"d":3,"w":1,"phase":"Foundations","t":"Python control flow - if/else, loops"},{"d":4,"w":1,"phase":"Foundations","t":"Python functions & modules"},{"d":5,"w":1,"phase":"Foundations","t":"Python data structures - list/dict/tuple/set"},{"d":6,"w":2,"phase":"Foundations","t":"Python file handling + mini practice"},{"d":7,"w":2,"phase":"Foundations","t":"NumPy அறிமுகம் - arrays"},{"d":8,"w":2,"phase":"Foundations","t":"NumPy operations & broadcasting"},{"d":9,"w":2,"phase":"Foundations","t":"Pandas அறிமுகம் - Series/DataFrame"},{"d":10,"w":2,"phase":"Foundations","t":"Pandas - data loading & inspection"},{"d":11,"w":3,"phase":"Foundations","t":"Pandas filtering & selection"},{"d":12,"w":3,"phase":"Foundations","t":"Pandas groupby & aggregation"},{"d":13,"w":3,"phase":"Foundations","t":"Pandas merge & join"},{"d":14,"w":3,"phase":"Foundations","t":"Handling missing data"},{"d":15,"w":3,"phase":"Foundations","t":"Mini Project: clean & explore a dataset"},{"d":16,"w":4,"phase":"Foundations","t":"Statistics basics - mean/median/mode/variance"},{"d":17,"w":4,"phase":"Foundations","t":"Probability basics"},{"d":18,"w":4,"phase":"Foundations","t":"Distributions - normal & binomial"},{"d":19,"w":4,"phase":"Foundations","t":"Descriptive statistics with Pandas"},{"d":20,"w":4,"phase":"Foundations","t":"Week review & self-quiz"},{"d":21,"w":5,"phase":"Statistics & SQL","t":"Inferential statistics அறிமுகம்"},{"d":22,"w":5,"phase":"Statistics & SQL","t":"Hypothesis testing"},{"d":23,"w":5,"phase":"Statistics & SQL","t":"Correlation & covariance"},{"d":24,"w":5,"phase":"Statistics & SQL","t":"SQL & databases அறிமுகம்"},{"d":25,"w":5,"phase":"Statistics & SQL","t":"SQL - SELECT, WHERE, ORDER BY"},{"d":26,"w":6,"phase":"Statistics & SQL","t":"SQL JOINs"},{"d":27,"w":6,"phase":"Statistics & SQL","t":"SQL GROUP BY & aggregate functions"},{"d":28,"w":6,"phase":"Statistics & SQL","t":"SQL subqueries"},{"d":29,"w":6,"phase":"Statistics & SQL","t":"SQL practice project"},{"d":30,"w":6,"phase":"Statistics & SQL","t":"Matplotlib அறிமுகம்"},{"d":31,"w":7,"phase":"Statistics & SQL","t":"Matplotlib customization"},{"d":32,"w":7,"phase":"Statistics & SQL","t":"Seaborn - statistical plots"},{"d":33,"w":7,"phase":"Statistics & SQL","t":"Data visualization best practices"},{"d":34,"w":7,"phase":"Statistics & SQL","t":"Exploratory Data Analysis (EDA) techniques"},{"d":35,"w":7,"phase":"Statistics & SQL","t":"EDA mini project"},{"d":36,"w":8,"phase":"Statistics & SQL","t":"Power BI / Excel dashboards அறிமுகம்"},{"d":37,"w":8,"phase":"Statistics & SQL","t":"Building dashboards"},{"d":38,"w":8,"phase":"Statistics & SQL","t":"Storytelling with data"},{"d":39,"w":8,"phase":"Statistics & SQL","t":"Weekly project: full EDA + report"},{"d":40,"w":8,"phase":"Statistics & SQL","t":"Review & quiz"},{"d":41,"w":9,"phase":"Machine Learning","t":"Machine Learning அறிமுகம் & types"},{"d":42,"w":9,"phase":"Machine Learning","t":"Train/test split & overfitting"},{"d":43,"w":9,"phase":"Machine Learning","t":"Linear Regression - theory"},{"d":44,"w":9,"phase":"Machine Learning","t":"Linear Regression with scikit-learn"},{"d":45,"w":9,"phase":"Machine Learning","t":"Regression evaluation metrics"},{"d":46,"w":10,"phase":"Machine Learning","t":"Logistic Regression"},{"d":47,"w":10,"phase":"Machine Learning","t":"Classification metrics - accuracy/precision/recall/F1"},{"d":48,"w":10,"phase":"Machine Learning","t":"Decision Trees"},{"d":49,"w":10,"phase":"Machine Learning","t":"Random Forests"},{"d":50,"w":10,"phase":"Machine Learning","t":"Cross-validation & model tuning basics"},{"d":51,"w":11,"phase":"Machine Learning","t":"K-Nearest Neighbors (KNN)"},{"d":52,"w":11,"phase":"Machine Learning","t":"Support Vector Machines (SVM)"},{"d":53,"w":11,"phase":"Machine Learning","t":"Naive Bayes"},{"d":54,"w":11,"phase":"Machine Learning","t":"Feature engineering basics"},{"d":55,"w":11,"phase":"Machine Learning","t":"Feature scaling & encoding"},{"d":56,"w":12,"phase":"Machine Learning","t":"Handling imbalanced data"},{"d":57,"w":12,"phase":"Machine Learning","t":"Hyperparameter tuning - GridSearchCV"},{"d":58,"w":12,"phase":"Machine Learning","t":"Pipelines in scikit-learn"},{"d":59,"w":12,"phase":"Machine Learning","t":"ML mini project - classification"},{"d":60,"w":12,"phase":"Machine Learning","t":"Review & quiz"},{"d":61,"w":13,"phase":"Machine Learning","t":"Unsupervised learning அறிமுகம்"},{"d":62,"w":13,"phase":"Machine Learning","t":"K-Means clustering"},{"d":63,"w":13,"phase":"Machine Learning","t":"Hierarchical clustering"},{"d":64,"w":13,"phase":"Machine Learning","t":"PCA & dimensionality reduction"},{"d":65,"w":13,"phase":"Machine Learning","t":"Clustering mini project"},{"d":66,"w":14,"phase":"Machine Learning","t":"Ensemble methods - bagging & boosting"},{"d":67,"w":14,"phase":"Machine Learning","t":"XGBoost / LightGBM அறிமுகம்"},{"d":68,"w":14,"phase":"Machine Learning","t":"Model interpretability - SHAP & feature importance"},{"d":69,"w":14,"phase":"Machine Learning","t":"End-to-end ML project"},{"d":70,"w":14,"phase":"Machine Learning","t":"Review & quiz"},{"d":71,"w":15,"phase":"Advanced Topics","t":"Deep Learning & Neural Networks அறிமுகம்"},{"d":72,"w":15,"phase":"Advanced Topics","t":"Perceptron & activation functions"},{"d":73,"w":15,"phase":"Advanced Topics","t":"Building a simple NN - Keras/TensorFlow"},{"d":74,"w":15,"phase":"Advanced Topics","t":"Training & backpropagation basics"},{"d":75,"w":15,"phase":"Advanced Topics","t":"CNN அறிமுகம் - images"},{"d":76,"w":16,"phase":"Advanced Topics","t":"CNN practice project"},{"d":77,"w":16,"phase":"Advanced Topics","t":"RNN / LSTM அறிமுகம் - sequences"},{"d":78,"w":16,"phase":"Advanced Topics","t":"NLP அறிமுகம்"},{"d":79,"w":16,"phase":"Advanced Topics","t":"Text preprocessing - tokenization, stopwords"},{"d":80,"w":16,"phase":"Advanced Topics","t":"Bag of Words & TF-IDF"},{"d":81,"w":17,"phase":"Advanced Topics","t":"Sentiment analysis mini project"},{"d":82,"w":17,"phase":"Advanced Topics","t":"Time series analysis அறிமுகம்"},{"d":83,"w":17,"phase":"Advanced Topics","t":"Time series forecasting basics"},{"d":84,"w":17,"phase":"Advanced Topics","t":"Big Data concepts - Hadoop/Spark overview"},{"d":85,"w":17,"phase":"Advanced Topics","t":"APIs & web scraping basics"},{"d":86,"w":18,"phase":"Advanced Topics","t":"Git & version control"},{"d":87,"w":18,"phase":"Advanced Topics","t":"GitHub for portfolio projects"},{"d":88,"w":18,"phase":"Advanced Topics","t":"Cloud platforms அறிமுகம் - AWS/GCP basics"},{"d":89,"w":18,"phase":"Advanced Topics","t":"Deploying a model - Flask/Streamlit"},{"d":90,"w":18,"phase":"Advanced Topics","t":"Review & quiz"},{"d":91,"w":19,"phase":"Capstone","t":"Capstone project - topic & data selection"},{"d":92,"w":19,"phase":"Capstone","t":"Capstone - data collection & cleaning"},{"d":93,"w":19,"phase":"Capstone","t":"Capstone - EDA & visualization"},{"d":94,"w":19,"phase":"Capstone","t":"Capstone - feature engineering"},{"d":95,"w":19,"phase":"Capstone","t":"Capstone - model building"},{"d":96,"w":20,"phase":"Capstone","t":"Capstone - model evaluation & tuning"},{"d":97,"w":20,"phase":"Capstone","t":"Capstone - deployment"},{"d":98,"w":20,"phase":"Capstone","t":"Capstone - documentation & README"},{"d":99,"w":20,"phase":"Capstone","t":"Capstone - polish & review"},{"d":100,"w":20,"phase":"Capstone","t":"Capstone presentation prep"},{"d":101,"w":21,"phase":"Job Readiness","t":"Resume building for Data Science"},{"d":102,"w":21,"phase":"Job Readiness","t":"LinkedIn profile optimization"},{"d":103,"w":21,"phase":"Job Readiness","t":"Portfolio website basics"},{"d":104,"w":21,"phase":"Job Readiness","t":"Common DS interview questions - technical"},{"d":105,"w":21,"phase":"Job Readiness","t":"SQL interview practice"},{"d":106,"w":22,"phase":"Job Readiness","t":"Statistics interview practice"},{"d":107,"w":22,"phase":"Job Readiness","t":"ML concepts interview practice"},{"d":108,"w":22,"phase":"Job Readiness","t":"Case study interviews"},{"d":109,"w":22,"phase":"Job Readiness","t":"Behavioral interview prep"},{"d":110,"w":22,"phase":"Job Readiness","t":"Mock interview practice"},{"d":111,"w":23,"phase":"Job Readiness","t":"Networking strategies"},{"d":112,"w":23,"phase":"Job Readiness","t":"Job search platforms & strategy"},{"d":113,"w":23,"phase":"Job Readiness","t":"Applications & cover letters"},{"d":114,"w":23,"phase":"Job Readiness","t":"Salary negotiation basics"},{"d":115,"w":23,"phase":"Job Readiness","t":"Continuing education - staying updated"},{"d":116,"w":24,"phase":"Job Readiness","t":"Second portfolio project polish"},{"d":117,"w":24,"phase":"Job Readiness","t":"Final resume/portfolio review"},{"d":118,"w":24,"phase":"Job Readiness","t":"Full mock technical interview"},{"d":119,"w":24,"phase":"Job Readiness","t":"Final concept review - all phases"},{"d":120,"w":24,"phase":"Job Readiness","t":"Wrap-up & next steps planning"}]
+;
+const RM_PHASE_TA = {'Foundations': 'அடிப்படைகள்', 'Statistics & SQL': 'புள்ளியியல் & SQL', 'Machine Learning': 'மெஷின் லேர்னிங்', 'Advanced Topics': 'மேம்பட்ட தலைப்புகள்', 'Capstone': 'காப்ஸ்டோன் திட்டம்', 'Job Readiness': 'வேலை தயார்நிலை'};
+const RM_STORE_KEY = 'ds-roadmap-progress';
+
+function rmGetCompleted(){
+  try{
+    const raw = localStorage.getItem(RM_STORE_KEY);
+    return raw ? new Set(JSON.parse(raw)) : new Set();
+  }catch(e){ return new Set(); }
+}
+function rmSaveCompleted(set){
+  try{ localStorage.setItem(RM_STORE_KEY, JSON.stringify([...set])); }
+  catch(e){ console.error('roadmap save failed', e); }
+}
+function rmCurrentDay(completed){
+  for(let d=1; d<=RM_TOTAL_DAYS; d++){ if(!completed.has(d)) return d; }
+  return RM_TOTAL_DAYS + 1;
+}
+
+function renderRoadmap(){
+  const completed = rmGetCompleted();
+  const doneCount = completed.size;
+  const curDay = rmCurrentDay(completed);
+  const curEntry = RM_ROADMAP.find(e=>e.d===curDay) || RM_ROADMAP[RM_ROADMAP.length-1];
+
+  const circumference = 2*Math.PI*27;
+  const frac = doneCount/RM_TOTAL_DAYS;
+  document.getElementById('rm-ring-fg').style.strokeDasharray = `${circumference*frac} ${circumference}`;
+  document.getElementById('rm-ring-label').textContent = `${doneCount}/${RM_TOTAL_DAYS}`;
+  document.getElementById('rm-current-phase').textContent = RM_PHASE_TA[curEntry.phase] || curEntry.phase;
+  document.getElementById('rm-current-week').textContent = 'வாரம் ' + curEntry.w;
+
+  if(curDay > RM_TOTAL_DAYS){
+    document.getElementById('rm-today-day').textContent = '🎉 முடிந்தது!';
+    document.getElementById('rm-today-title').textContent = '120 நாட்கள் பாதையும் நிறைவு செய்துவிட்டீர்கள்!';
+    document.getElementById('rm-mark-done').style.display = 'none';
+  } else {
+    document.getElementById('rm-today-day').textContent = 'Day ' + curDay;
+    document.getElementById('rm-today-title').textContent = curEntry.t;
+    document.getElementById('rm-mark-done').style.display = 'block';
+  }
+
+  // group by week
+  const weeksList = document.getElementById('rm-weeks-list');
+  weeksList.innerHTML = '';
+  const weekNums = [...new Set(RM_ROADMAP.map(e=>e.w))];
+  weekNums.forEach(w=>{
+    const daysInWeek = RM_ROADMAP.filter(e=>e.w===w);
+    const doneInWeek = daysInWeek.filter(e=>completed.has(e.d)).length;
+    const details = document.createElement('details');
+    details.className = 'rm-week-group';
+    if(w === curEntry.w) details.open = true;
+    const phaseLabel = RM_PHASE_TA[daysInWeek[0].phase] || daysInWeek[0].phase;
+    details.innerHTML = `
+      <summary class="rm-week-summary">
+        <span>வாரம் ${w} · ${phaseLabel}</span>
+        <span class="rm-week-progress">${doneInWeek}/${daysInWeek.length}</span>
+      </summary>
+    `;
+    daysInWeek.forEach(entry=>{
+      const isDone = completed.has(entry.d);
+      const row = document.createElement('div');
+      row.className = 'rm-day-row' + (isDone ? ' done':'');
+      row.innerHTML = `
+        <div class="rm-day-check"><svg viewBox="0 0 10 10" fill="none"><path d="M1 5L4 8L9 1.5" stroke="#0d0f14" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="rm-day-num">Day ${entry.d}</div>
+        <div class="rm-day-title">${entry.t}</div>
+      `;
+      row.addEventListener('click', ()=>{
+        const c = rmGetCompleted();
+        if(c.has(entry.d)) c.delete(entry.d); else c.add(entry.d);
+        rmSaveCompleted(c);
+        renderRoadmap();
+      });
+      details.appendChild(row);
+    });
+    weeksList.appendChild(details);
+  });
+}
+
+document.getElementById('rm-mark-done').addEventListener('click', ()=>{
+  const completed = rmGetCompleted();
+  const curDay = rmCurrentDay(completed);
+  if(curDay <= RM_TOTAL_DAYS){
+    completed.add(curDay);
+    rmSaveCompleted(completed);
+    renderRoadmap();
+  }
+});
+
+
 function switchTab(tab){
   activeTab = tab;
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
   document.getElementById('view-month').classList.toggle('active', tab==='month');
   document.getElementById('view-day').classList.toggle('active', tab==='day');
+  document.getElementById('view-roadmap').classList.toggle('active', tab==='roadmap');
   document.getElementById('month-nav').style.display = tab==='month' ? 'flex':'none';
   document.getElementById('day-nav').style.display = tab==='day' ? 'flex':'none';
+  document.getElementById('fab-add').style.display = tab==='roadmap' ? 'none':'flex';
   if(tab==='month') renderMonthGrid();
   if(tab==='day') renderDayView();
+  if(tab==='roadmap') renderRoadmap();
 }
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>switchTab(btn.dataset.tab));
