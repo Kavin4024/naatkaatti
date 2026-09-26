@@ -16,49 +16,64 @@
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
   :root{
-    --bg:#0d0f14;
-    --surface:#161922;
-    --surface-2:#1e222e;
-    --line:#2a2f3d;
+    --bg:#1e222b;
+    --shadow-dark:rgba(0,0,0,0.55);
+    --shadow-light:rgba(255,255,255,0.045);
     --ink:#eef0f4;
-    --muted:#7c8296;
+    --muted:#8b90a3;
     --accent:#34c9a3;
-    --accent-soft:rgba(52,201,163,0.16);
+    --accent-soft:rgba(52,201,163,0.14);
     --busy:#f5a623;
-    --busy-soft:rgba(245,166,35,0.16);
+    --busy-soft:rgba(245,166,35,0.14);
     --danger:#ff5470;
+    --danger-soft:rgba(255,84,112,0.14);
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{margin:0; background:var(--bg); color:var(--ink); font-family:'Noto Sans Tamil','Space Grotesk',sans-serif; overscroll-behavior-y:contain;}
   .app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;}
 
-  header{position:sticky; top:0; z-index:20; background:var(--bg); padding:16px 16px 0; border-bottom:1px solid var(--line);}
+  /* ---- Neumorphic base mixins (applied per-selector below) ---- */
+  /* raised:  box-shadow: 7px 7px 14px var(--shadow-dark), -7px -7px 14px var(--shadow-light); */
+  /* pressed: box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light); */
+
+  header{position:sticky; top:0; z-index:20; background:var(--bg); padding:16px 16px 0;}
   .top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
   .eyebrow{font-family:'JetBrains Mono',monospace; font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
   h1{font-family:'Noto Sans Tamil',sans-serif; font-size:21px; font-weight:700; margin:2px 0 0;}
   .tamil-year-chip{
     font-family:'Noto Sans Tamil',sans-serif; font-size:11.5px; font-weight:600; color:var(--accent);
-    background:var(--accent-soft); padding:5px 10px; border-radius:20px;
+    background:var(--bg); padding:7px 14px; border-radius:20px;
+    box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
   }
   .bell-btn{
-    width:34px; height:34px; border-radius:10px; background:var(--surface); border:1px solid var(--line);
+    width:36px; height:36px; border-radius:14px; background:var(--bg); border:none;
     color:var(--muted); display:flex; align-items:center; justify-content:center; cursor:pointer;
+    box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
   }
+  .bell-btn:active{ box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); }
   .bell-btn svg{width:17px;height:17px;}
-  .bell-btn.enabled{color:var(--accent); border-color:var(--accent);}
+  .bell-btn.enabled{
+    color:var(--accent);
+    box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+  }
   .notif-banner{
     font-family:'Noto Sans Tamil',sans-serif; font-size:12px; color:var(--busy);
-    background:var(--busy-soft); border:1px solid rgba(245,166,35,0.4); border-radius:10px;
-    padding:8px 12px; margin-bottom:12px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;
+    background:var(--bg); border-radius:14px;
+    box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+    padding:10px 14px; margin-bottom:12px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;
   }
   .notif-banner button{
     background:none; border:none; color:var(--busy); font-weight:700; text-decoration:underline;
     cursor:pointer; font-family:inherit; font-size:12px; padding:0;
   }
 
-  .nav-row{display:flex; align-items:center; justify-content:space-between; padding-bottom:12px;}
-  .nav-row button{background:var(--surface); border:1px solid var(--line); color:var(--ink); width:32px;height:32px;border-radius:9px; font-size:16px; cursor:pointer; display:flex;align-items:center;justify-content:center;}
-  .nav-row button:active{background:var(--surface-2);}
+  .nav-row{display:flex; align-items:center; justify-content:space-between; padding-bottom:14px;}
+  .nav-row button{
+    background:var(--bg); border:none; color:var(--ink); width:36px;height:36px;border-radius:14px;
+    font-size:16px; cursor:pointer; display:flex;align-items:center;justify-content:center;
+    box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+  }
+  .nav-row button:active{ box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); }
   .nav-title{text-align:center;}
   .nav-title .t-month{font-family:'Noto Sans Tamil',sans-serif; font-weight:700; font-size:17px; color:var(--ink);}
   .nav-title .g-month{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); margin-top:2px;}
@@ -67,56 +82,73 @@
   .view.active{display:flex;}
 
   /* ---- Month grid ---- */
-  #view-month{padding:12px 12px 0;}
-  .weekday-row{display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:6px;}
+  #view-month{padding:14px 14px 0;}
+  .weekday-row{display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-bottom:8px;}
   .weekday-row div{text-align:center; font-family:'Noto Sans Tamil',sans-serif; font-size:11px; color:var(--muted); font-weight:600;}
-  .month-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:4px; overflow-y:auto; padding-bottom:16px;}
+  .month-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:7px; overflow-y:auto; padding:2px 2px 16px;}
   .day-cell{
-    aspect-ratio:1; border-radius:10px; background:var(--surface); border:1px solid var(--line);
+    aspect-ratio:1; border-radius:14px; background:var(--bg);
+    box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
     cursor:pointer; position:relative; padding:2px;
   }
-  .day-cell.other-month{opacity:0.25;}
-  .day-cell.today{border-color:var(--accent); border-width:1.5px;}
-  .day-cell:active{background:var(--surface-2);}
+  .day-cell.other-month{opacity:0.3;}
+  .day-cell.today{
+    box-shadow: inset 3px 3px 7px var(--shadow-dark), inset -3px -3px 7px var(--shadow-light);
+  }
+  .day-cell.today .t-num{color:var(--accent);}
+  .day-cell:active{ box-shadow: inset 3px 3px 7px var(--shadow-dark), inset -3px -3px 7px var(--shadow-light); }
   .day-cell .t-num{font-family:'Noto Sans Tamil',sans-serif; font-weight:700; font-size:15px;}
   .day-cell .g-num{font-family:'JetBrains Mono',monospace; font-size:8.5px; color:var(--muted);}
-  .day-cell .dot{position:absolute; bottom:4px; width:4px;height:4px;border-radius:50%; background:var(--accent);}
-  .day-cell.holiday{border-color:var(--danger); background:rgba(255,84,112,0.08);}
+  .day-cell .dot{position:absolute; bottom:5px; width:4px;height:4px;border-radius:50%; background:var(--accent);}
+  .day-cell.holiday{
+    box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light), inset 0 0 0 1.5px rgba(255,84,112,0.4);
+  }
   .day-cell.holiday .t-num{color:var(--danger);}
-  .day-cell .holiday-dot{position:absolute; top:5px; right:5px; width:5px;height:5px;border-radius:50%; background:var(--danger);}
+  .day-cell .holiday-dot{position:absolute; top:6px; right:6px; width:5px;height:5px;border-radius:50%; background:var(--danger);}
 
   /* ---- Day view ---- */
   #view-day{flex:1; overflow-y:auto;}
-  .day-header-card{margin:14px 16px; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:14px 16px;}
+  .day-header-card{
+    margin:16px 16px; background:var(--bg); border-radius:20px; padding:16px 18px;
+    box-shadow: 7px 7px 14px var(--shadow-dark), -7px -7px 14px var(--shadow-light);
+  }
   .day-header-card .t-date{font-family:'Noto Sans Tamil',sans-serif; font-size:19px; font-weight:700; color:var(--ink);}
   .day-header-card .g-date{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); margin-top:4px;}
   .day-header-card .t-sub{font-family:'Noto Sans Tamil',sans-serif; font-size:12.5px; color:var(--accent); margin-top:6px; font-weight:600;}
   .holiday-banner{
-    margin-top:10px; padding:8px 12px; border-radius:10px;
-    background:rgba(255,84,112,0.14); border:1px solid rgba(255,84,112,0.4);
+    margin-top:12px; padding:9px 14px; border-radius:14px;
+    background:var(--bg);
+    box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
     color:var(--danger); font-size:12.5px; font-weight:600; font-family:'Noto Sans Tamil',sans-serif;
     display:flex; align-items:center; gap:6px;
   }
 
   .section-label{
     font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase;
-    color:var(--muted); margin:0 16px 8px;
+    color:var(--muted); margin:0 16px 10px;
   }
 
-  .freebusy{margin:0 16px 18px; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:14px;}
-  .fb-track{position:relative; height:26px; background:var(--surface-2); border-radius:8px; overflow:hidden;}
+  .freebusy{
+    margin:0 16px 20px; background:var(--bg); border-radius:20px; padding:16px;
+    box-shadow: 7px 7px 14px var(--shadow-dark), -7px -7px 14px var(--shadow-light);
+  }
+  .fb-track{
+    position:relative; height:26px; background:var(--bg); border-radius:10px; overflow:hidden;
+    box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+  }
   .fb-block{position:absolute; top:0; bottom:0; background:var(--busy); opacity:0.85;}
-  .fb-labels{display:flex; justify-content:space-between; margin-top:6px;}
+  .fb-labels{display:flex; justify-content:space-between; margin-top:8px;}
   .fb-labels span{font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--muted);}
 
-  .event-list{padding:0 16px 100px; display:flex; flex-direction:column; gap:10px;}
+  .event-list{padding:0 16px 100px; display:flex; flex-direction:column; gap:12px;}
   .event-card{
-    background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--accent);
-    border-radius:12px; padding:12px 14px; display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
+    background:var(--bg); border-radius:16px; padding:13px 15px;
+    box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light), inset 3px 0 0 var(--accent);
+    display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
     cursor:pointer;
   }
-  .event-card:active{background:var(--surface-2);}
+  .event-card:active{ box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); }
   .event-title{font-weight:600; font-size:14.5px;}
   .event-time{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); margin-top:2px;}
   .event-loc{font-size:12px; color:var(--muted); margin-top:3px;}
@@ -125,10 +157,12 @@
 
   .fab{
     position:fixed; bottom:24px; right:calc(50% - 240px + 20px); max-width:480px;
-    width:56px; height:56px; border-radius:50%; background:var(--accent); color:#0d0f14;
-    border:none; font-size:26px; font-weight:700; cursor:pointer; box-shadow:0 6px 18px rgba(52,201,163,0.35);
+    width:58px; height:58px; border-radius:50%; background:var(--bg); color:var(--accent);
+    border:none; font-size:26px; font-weight:700; cursor:pointer;
+    box-shadow: 7px 7px 14px var(--shadow-dark), -7px -7px 14px var(--shadow-light), inset 0 0 0 1.5px rgba(52,201,163,0.3);
     display:flex; align-items:center; justify-content:center; z-index:30;
   }
+  .fab:active{ box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); }
   @media (max-width:520px){ .fab{right:20px;} }
 
   /* ---- Modal ---- */
@@ -138,26 +172,47 @@
   }
   .modal-overlay.active{display:flex;}
   .modal{
-    background:var(--surface); width:100%; max-width:480px; border-radius:20px 20px 0 0;
-    padding:20px 18px calc(20px + env(safe-area-inset-bottom)); border-top:1px solid var(--line);
+    background:var(--bg); width:100%; max-width:480px; border-radius:26px 26px 0 0;
+    padding:22px 18px calc(20px + env(safe-area-inset-bottom));
+    box-shadow: 0 -8px 20px var(--shadow-dark);
   }
-  .modal h2{font-family:'Noto Sans Tamil',sans-serif; font-size:17px; margin:0 0 16px;}
-  .field{margin-bottom:14px;}
-  .field label{font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); display:block; margin-bottom:6px;}
+  .modal h2{font-family:'Noto Sans Tamil',sans-serif; font-size:17px; margin:0 0 18px;}
+  .field{margin-bottom:16px;}
+  .field label{font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); display:block; margin-bottom:8px;}
   .field input, .field select{
-    width:100%; background:var(--surface-2); border:1px solid var(--line); color:var(--ink);
-    padding:11px 12px; border-radius:10px; font-size:14px; font-family:inherit;
+    width:100%; background:var(--bg); border:none; color:var(--ink);
+    padding:12px 14px; border-radius:14px; font-size:14px; font-family:inherit;
+    box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
   }
   .field-row{display:flex; gap:10px;}
   .field-row .field{flex:1;}
-  .modal-actions{display:flex; gap:10px; margin-top:6px;}
-  .btn{flex:1; padding:13px; border-radius:12px; border:none; font-weight:600; font-size:14px; cursor:pointer; font-family:inherit;}
-  .btn-primary{background:var(--accent); color:#0d0f14;}
-  .btn-secondary{background:var(--surface-2); color:var(--ink); border:1px solid var(--line);}
+  .modal-actions{display:flex; gap:12px; margin-top:8px;}
+  .btn{flex:1; padding:14px; border-radius:16px; border:none; font-weight:600; font-size:14px; cursor:pointer; font-family:inherit;}
+  .btn-primary{
+    background:var(--bg); color:var(--accent);
+    box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light), inset 0 0 0 1.5px rgba(52,201,163,0.35);
+  }
+  .btn-primary:active{ box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); }
+  .btn-secondary{
+    background:var(--bg); color:var(--muted);
+    box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+  }
+  .btn-secondary:active{ box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); }
 
-  nav.tabbar{display:flex; border-top:1px solid var(--line); background:var(--bg); padding:8px 12px calc(10px + env(safe-area-inset-bottom));}
-  .tab-btn{flex:1; background:none; border:none; color:var(--muted); display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 0; cursor:pointer; font-family:'Noto Sans Tamil',sans-serif; font-size:11px; font-weight:500;}
-  .tab-btn.active{color:var(--ink);}
+  nav.tabbar{
+    display:flex; background:var(--bg); padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+    box-shadow: 0 -6px 14px var(--shadow-dark);
+    gap:10px;
+  }
+  .tab-btn{
+    flex:1; background:var(--bg); border:none; color:var(--muted); border-radius:14px;
+    display:flex; flex-direction:column; align-items:center; gap:3px; padding:8px 0; cursor:pointer;
+    font-family:'Noto Sans Tamil',sans-serif; font-size:11px; font-weight:500;
+  }
+  .tab-btn.active{
+    color:var(--accent);
+    box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+  }
   .tab-btn svg{width:20px;height:20px;}
 </style>
 </head>
@@ -277,6 +332,39 @@
 
 <script>
 // ============ Tamil calendar data ============
+// Confirmed official Tamil month start dates (from Tamil Nadu panchangam), covering
+// Dec 2025 – Mar 2027. Where exact data isn't available, real transit dates can shift
+// by a day year to year, so this list is used in preference to the generic table below.
+const CONFIRMED_TAMIL_MONTHS = [
+  {name:'மார்கழி',   date:[2025,12,16]},
+  {name:'தை',        date:[2026,1,15]},
+  {name:'மாசி',      date:[2026,2,13]},
+  {name:'பங்குனி',   date:[2026,3,15]},
+  {name:'சித்திரை',  date:[2026,4,14]},
+  {name:'வைகாசி',    date:[2026,5,15]},
+  {name:'ஆனி',       date:[2026,6,15]},
+  {name:'ஆடி',       date:[2026,7,17]},
+  {name:'ஆவணி',      date:[2026,8,18]},
+  {name:'புரட்டாசி', date:[2026,9,18]},
+  {name:'ஐப்பசி',    date:[2026,10,18]},
+  {name:'கார்த்திகை', date:[2026,11,17]},
+  {name:'மார்கழி',   date:[2026,12,16]}, // carried from prior cycle, unconfirmed for this exact year
+  {name:'தை',        date:[2027,1,15]},  // carried, unconfirmed
+  {name:'மாசி',      date:[2027,2,13]},  // carried, unconfirmed
+  {name:'பங்குனி',   date:[2027,3,15]}   // carried, unconfirmed
+].map(m => ({name:m.name, dateObj: new Date(m.date[0], m.date[1]-1, m.date[2])}));
+const CONFIRMED_RANGE_START = CONFIRMED_TAMIL_MONTHS[0].dateObj;
+const CONFIRMED_RANGE_END = new Date(2027,3,13);
+
+function tamilMonthInfoConfirmed(gregDate){
+  let current = CONFIRMED_TAMIL_MONTHS[0];
+  for(const item of CONFIRMED_TAMIL_MONTHS){
+    if(item.dateObj <= gregDate) current = item; else break;
+  }
+  const dayNum = Math.floor((gregDate - current.dateObj)/86400000) + 1;
+  return {name:current.name, day:dayNum};
+}
+
 const TAMIL_MONTHS = [
   {name:'சித்திரை', start:[4,14]}, {name:'வைகாசி', start:[5,15]}, {name:'ஆனி', start:[6,15]},
   {name:'ஆடி', start:[7,17]}, {name:'ஆவணி', start:[8,17]}, {name:'புரட்டாசி', start:[9,17]},
@@ -300,6 +388,9 @@ function tamilYearName(gregDate){
   return TAMIL_YEAR_CYCLE[idx];
 }
 function tamilMonthInfo(gregDate){
+  if(gregDate >= CONFIRMED_RANGE_START && gregDate <= CONFIRMED_RANGE_END){
+    return tamilMonthInfoConfirmed(gregDate);
+  }
   // find which tamil month window this date falls in
   const y = gregDate.getFullYear();
   const boundaries = TAMIL_MONTHS.map((m,i)=>{
@@ -394,6 +485,19 @@ function getHoliday(date){
 
 // Returns {name, startDate, endDate} for the Tamil month containing refDate
 function getTamilMonthBounds(refDate){
+  if(refDate >= CONFIRMED_RANGE_START && refDate <= CONFIRMED_RANGE_END){
+    let idx = 0;
+    for(let i=0;i<CONFIRMED_TAMIL_MONTHS.length;i++){
+      if(CONFIRMED_TAMIL_MONTHS[i].dateObj <= refDate) idx = i; else break;
+    }
+    const start = CONFIRMED_TAMIL_MONTHS[idx];
+    const next = CONFIRMED_TAMIL_MONTHS[idx+1];
+    if(next){
+      const endDate = new Date(next.dateObj); endDate.setDate(endDate.getDate()-1);
+      return {name:start.name, startDate:start.dateObj, endDate};
+    }
+    // fall through to generic if we're at the edge of the confirmed table
+  }
   const y = refDate.getFullYear();
   let list = [];
   for(let yy=y-1; yy<=y+1; yy++){
@@ -674,7 +778,11 @@ async function checkReminders(){
       const diffMs = now - reminderAt;
       const fKey = firedKey(dKey, ev.id);
 
-      if(diffMs >= 0 && diffMs < 90000 && !localStorage.getItem(fKey)){
+      // 3-hour catch-up window: mobile browsers suspend JS timers in the
+      // background, so the exact due-moment is often missed. Firing any time
+      // up to 3 hours later (e.g. when the app is reopened) ensures the
+      // reminder still comes through instead of being silently dropped.
+      if(diffMs >= 0 && diffMs < 3*60*60*1000 && !localStorage.getItem(fKey)){
         const tInfo = tamilMonthInfo(d);
         fireNotification(
           '🔔 ' + ev.title,
