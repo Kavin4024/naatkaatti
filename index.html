@@ -10,23 +10,70 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="நாட்காட்டி">
-<meta name="theme-color" content="#0d0f14">
+<meta name="theme-color" content="#1c1410">
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
   :root{
-    --bg:#1e222b;
-    --shadow-dark:rgba(0,0,0,0.55);
-    --shadow-light:rgba(255,255,255,0.045);
-    --ink:#eef0f4;
-    --muted:#8b90a3;
-    --accent:#34c9a3;
-    --accent-soft:rgba(52,201,163,0.14);
-    --busy:#f5a623;
-    --busy-soft:rgba(245,166,35,0.14);
-    --danger:#ff5470;
-    --danger-soft:rgba(255,84,112,0.14);
+    /* Light theme — kolam on cream floor */
+    --bg:#f7f0e2;
+    --shadow-dark:rgba(120,88,48,0.20);
+    --shadow-light:rgba(255,255,255,0.95);
+    --ink:#2e1e13;
+    --muted:#8a7458;
+    --accent:#a8721f;
+    --accent-soft:rgba(168,114,31,0.14);
+    --on-accent:#2e1e13;
+    --busy:#b8863a;
+    --busy-soft:rgba(184,134,58,0.16);
+    --danger:#a8402a;
+    --danger-soft:rgba(168,64,42,0.14);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      /* Dark theme — kolam on maroon-night floor */
+      --bg:#1c1410;
+      --shadow-dark:rgba(0,0,0,0.6);
+      --shadow-light:rgba(255,255,255,0.05);
+      --ink:#f5ead6;
+      --muted:#a3907c;
+      --accent:#e3b45c;
+      --accent-soft:rgba(227,180,92,0.16);
+      --on-accent:#2e1e13;
+      --busy:#e3b45c;
+      --busy-soft:rgba(227,180,92,0.16);
+      --danger:#e0725a;
+      --danger-soft:rgba(224,114,90,0.16);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#1c1410;
+    --shadow-dark:rgba(0,0,0,0.6);
+    --shadow-light:rgba(255,255,255,0.05);
+    --ink:#f5ead6;
+    --muted:#a3907c;
+    --accent:#e3b45c;
+    --accent-soft:rgba(227,180,92,0.16);
+    --on-accent:#2e1e13;
+    --busy:#e3b45c;
+    --busy-soft:rgba(227,180,92,0.16);
+    --danger:#e0725a;
+    --danger-soft:rgba(224,114,90,0.16);
+  }
+  :root[data-theme="light"]{
+    --bg:#f7f0e2;
+    --shadow-dark:rgba(120,88,48,0.20);
+    --shadow-light:rgba(255,255,255,0.95);
+    --ink:#2e1e13;
+    --muted:#8a7458;
+    --accent:#a8721f;
+    --accent-soft:rgba(168,114,31,0.14);
+    --on-accent:#2e1e13;
+    --busy:#b8863a;
+    --busy-soft:rgba(184,134,58,0.16);
+    --danger:#a8402a;
+    --danger-soft:rgba(168,64,42,0.14);
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{margin:0; background:var(--bg); color:var(--ink); font-family:'Noto Sans Tamil','Space Grotesk',sans-serif; overscroll-behavior-y:contain;}
@@ -37,6 +84,11 @@
   /* pressed: box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light); */
 
   header{position:sticky; top:0; z-index:20; background:var(--bg); padding:16px 16px 0;}
+  header::after{
+    content:''; display:block; height:6px; margin-top:14px;
+    background-image: radial-gradient(circle, var(--accent) 1.3px, transparent 1.3px);
+    background-size: 14px 6px; background-position: center; opacity:0.55;
+  }
   .top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
   .eyebrow{font-family:'JetBrains Mono',monospace; font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
   h1{font-family:'Noto Sans Tamil',sans-serif; font-size:21px; font-weight:700; margin:2px 0 0;}
@@ -102,10 +154,12 @@
   .day-cell .g-num{font-family:'JetBrains Mono',monospace; font-size:8.5px; color:var(--muted);}
   .day-cell .dot{position:absolute; bottom:5px; width:4px;height:4px;border-radius:50%; background:var(--accent);}
   .day-cell.holiday{
-    box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light), inset 0 0 0 1.5px rgba(255,84,112,0.4);
+    box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light), inset 0 0 0 1.5px rgba(168,64,42,0.45);
   }
   .day-cell.holiday .t-num{color:var(--danger);}
   .day-cell .holiday-dot{position:absolute; top:6px; right:6px; width:5px;height:5px;border-radius:50%; background:var(--danger);}
+  .day-cell .ds-dot{position:absolute; top:6px; left:6px; width:5px;height:5px;border-radius:50%; background:#6b4fa0; box-shadow:inset 0 0 0 1px rgba(107,79,160,0.5);}
+  .day-cell .ds-dot.ds-done{background:var(--accent);}
 
   /* ---- Day view ---- */
   #view-day{flex:1; overflow-y:auto;}
@@ -260,6 +314,7 @@
   .rm-day-check svg{width:11px;height:11px; opacity:0;}
   .rm-day-row.done .rm-day-check{background:var(--accent); box-shadow:none;}
   .rm-day-row.done .rm-day-check svg{opacity:1;}
+  .rm-check-path{stroke:var(--on-accent);}
   .rm-day-row.done .rm-day-title{color:var(--muted); text-decoration:line-through;}
   .rm-day-num{font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); width:34px; flex-shrink:0;}
   .rm-day-title{font-size:13px; flex:1;}
@@ -274,6 +329,9 @@
         <h1>நாட்காட்டி</h1>
       </div>
       <div style="display:flex; align-items:center; gap:8px;">
+        <button id="theme-toggle" class="bell-btn" aria-label="Theme" title="தோற்றம் மாற்று">
+          <svg id="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"></svg>
+        </button>
         <button id="notif-bell" class="bell-btn" aria-label="Notifications" title="நினைவூட்டல்களை இயக்கு">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         </button>
@@ -314,6 +372,15 @@
       <div class="g-date" id="dh-gdate">Tuesday, 14 April 2026</div>
       <div class="t-sub" id="dh-tsub">தமிழ் ஆண்டு: விசுவாவசு</div>
       <div class="holiday-banner" id="holiday-banner" style="display:none;">🎉 <span id="holiday-name"></span></div>
+    </div>
+
+    <div id="dv-ds-section" style="display:none;">
+      <div class="section-label">Data Science பாதை</div>
+      <div class="rm-today-card" id="dv-ds-card" style="margin:0 16px 18px;">
+        <div class="rm-today-day" id="dv-ds-day">Day 1</div>
+        <div class="rm-today-title" id="dv-ds-title">Topic</div>
+        <button class="btn btn-primary" id="dv-ds-toggle" style="margin-top:12px;">முடிந்தது ✓</button>
+      </div>
     </div>
 
     <div class="section-label">Free / Busy · 6 AM – 11 PM</div>
@@ -414,6 +481,42 @@
 </div>
 
 <script>
+// ============ Theme (light/dark, follows system + manual override) ============
+const THEME_KEY = 'theme-pref'; // 'auto' | 'light' | 'dark'
+const THEME_ICONS = {
+  auto:  '<circle cx="12" cy="12" r="9"/><path d="M12 3v18a9 9 0 0 0 0-18z" fill="currentColor" stroke="none"/>',
+  light: '<circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/>',
+  dark:  '<path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z" fill="currentColor" stroke="none"/>'
+};
+function getThemePref(){
+  try{ return localStorage.getItem(THEME_KEY) || 'auto'; }catch(e){ return 'auto'; }
+}
+function applyTheme(pref){
+  const root = document.documentElement;
+  if(pref === 'auto'){ root.removeAttribute('data-theme'); }
+  else{ root.setAttribute('data-theme', pref); }
+  document.getElementById('theme-icon').innerHTML = THEME_ICONS[pref];
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if(meta){
+    const bg = getComputedStyle(root).getPropertyValue('--bg').trim();
+    if(bg) meta.setAttribute('content', bg);
+  }
+}
+function cycleTheme(){
+  const order = ['auto','light','dark'];
+  const cur = getThemePref();
+  const next = order[(order.indexOf(cur)+1) % order.length];
+  try{ localStorage.setItem(THEME_KEY, next); }catch(e){}
+  applyTheme(next);
+}
+document.getElementById('theme-toggle').addEventListener('click', cycleTheme);
+applyTheme(getThemePref());
+if(window.matchMedia){
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', ()=>{
+    if(getThemePref() === 'auto') applyTheme('auto');
+  });
+}
+
 // ============ Tamil calendar data ============
 // Confirmed official Tamil month start dates (from Tamil Nadu panchangam), covering
 // Dec 2025 – Mar 2027. Where exact data isn't available, real transit dates can shift
@@ -640,10 +743,15 @@ async function renderMonthGrid(){
   for(const cell of cells){
     const tInfo = tamilMonthInfo(cell.date);
     const holidayName = getHoliday(cell.date);
+    const dsEntry = rmEntryForDate(cell.date);
+    const dsDone = dsEntry ? rmGetCompleted().has(dsEntry.d) : false;
     const div = document.createElement('div');
     div.className = 'day-cell' + (cell.other ? ' other-month':'') + (isToday(cell.date) ? ' today':'') + (holidayName ? ' holiday':'');
     if(holidayName) div.title = holidayName;
-    div.innerHTML = `<div class="t-num">${tInfo.day}</div><div class="g-num">${cell.date.getDate()}</div>` + (holidayName ? '<div class="holiday-dot"></div>' : '');
+    if(dsEntry) div.title = (div.title ? div.title + ' · ' : '') + 'DS Day ' + dsEntry.d + ': ' + dsEntry.t;
+    div.innerHTML = `<div class="t-num">${tInfo.day}</div><div class="g-num">${cell.date.getDate()}</div>`
+      + (holidayName ? '<div class="holiday-dot"></div>' : '')
+      + (dsEntry ? `<div class="ds-dot${dsDone ? ' ds-done':''}"></div>` : '');
     div.addEventListener('click', ()=>{ selectedDate = new Date(cell.date); switchTab('day'); });
     grid.appendChild(div);
 
@@ -670,6 +778,27 @@ async function renderDayView(){
   document.getElementById('d-tamil-label').textContent = `${tInfo.name} ${tInfo.day}`;
   document.getElementById('dh-tdate').textContent = `${tInfo.name} ${tInfo.day}, ${tWeekday}`;
   document.getElementById('dh-tsub').textContent = `தமிழ் ஆண்டு: ${tYear}`;
+
+  // Data Science roadmap card for this date
+  const dsEntry = rmEntryForDate(selectedDate);
+  const dsSection = document.getElementById('dv-ds-section');
+  if(dsEntry){
+    const completed = rmGetCompleted();
+    const isDone = completed.has(dsEntry.d);
+    dsSection.style.display = 'block';
+    document.getElementById('dv-ds-day').textContent = 'Day ' + dsEntry.d + ' · ' + (RM_PHASE_TA[dsEntry.phase]||dsEntry.phase);
+    document.getElementById('dv-ds-title').textContent = dsEntry.t;
+    const toggleBtn = document.getElementById('dv-ds-toggle');
+    toggleBtn.textContent = isDone ? 'முடிந்தது ✓ (தட்டி நீக்கு)' : 'இன்று முடிந்தது ✓';
+    toggleBtn.onclick = ()=>{
+      const c = rmGetCompleted();
+      if(c.has(dsEntry.d)) c.delete(dsEntry.d); else c.add(dsEntry.d);
+      rmSaveCompleted(c);
+      renderDayView();
+    };
+  } else {
+    dsSection.style.display = 'none';
+  }
 
   const holidayName = getHoliday(selectedDate);
   const banner = document.getElementById('holiday-banner');
@@ -788,6 +917,23 @@ const RM_ROADMAP = [{"d":1,"w":1,"phase":"Foundations","t":"Data Science-அற�
 ;
 const RM_PHASE_TA = {'Foundations': 'அடிப்படைகள்', 'Statistics & SQL': 'புள்ளியியல் & SQL', 'Machine Learning': 'மெஷின் லேர்னிங்', 'Advanced Topics': 'மேம்பட்ட தலைப்புகள்', 'Capstone': 'காப்ஸ்டோன் திட்டம்', 'Job Readiness': 'வேலை தயார்நிலை'};
 const RM_STORE_KEY = 'ds-roadmap-progress';
+const RM_START_DATE = new Date(2026, 9, 7); // Oct 7, 2026 = Day 1 (புரட்டாசி 20)
+
+function rmDayForDate(date){
+  const d0 = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const diff = Math.round((d0 - RM_START_DATE) / 86400000) + 1;
+  return diff;
+}
+function rmDateForDay(dayNum){
+  const d = new Date(RM_START_DATE);
+  d.setDate(d.getDate() + (dayNum - 1));
+  return d;
+}
+function rmEntryForDate(date){
+  const dayNum = rmDayForDate(date);
+  if(dayNum < 1 || dayNum > RM_TOTAL_DAYS) return null;
+  return RM_ROADMAP.find(e=>e.d===dayNum) || null;
+}
 
 function rmGetCompleted(){
   try{
@@ -800,31 +946,43 @@ function rmSaveCompleted(set){
   catch(e){ console.error('roadmap save failed', e); }
 }
 function rmCurrentDay(completed){
-  for(let d=1; d<=RM_TOTAL_DAYS; d++){ if(!completed.has(d)) return d; }
-  return RM_TOTAL_DAYS + 1;
+  const todayNum = rmDayForDate(new Date());
+  if(todayNum < 1) return 0; // roadmap hasn't started yet
+  if(todayNum > RM_TOTAL_DAYS) return RM_TOTAL_DAYS + 1; // finished
+  return todayNum;
 }
 
 function renderRoadmap(){
   const completed = rmGetCompleted();
   const doneCount = completed.size;
   const curDay = rmCurrentDay(completed);
-  const curEntry = RM_ROADMAP.find(e=>e.d===curDay) || RM_ROADMAP[RM_ROADMAP.length-1];
 
   const circumference = 2*Math.PI*27;
   const frac = doneCount/RM_TOTAL_DAYS;
   document.getElementById('rm-ring-fg').style.strokeDasharray = `${circumference*frac} ${circumference}`;
   document.getElementById('rm-ring-label').textContent = `${doneCount}/${RM_TOTAL_DAYS}`;
-  document.getElementById('rm-current-phase').textContent = RM_PHASE_TA[curEntry.phase] || curEntry.phase;
-  document.getElementById('rm-current-week').textContent = 'வாரம் ' + curEntry.w;
 
-  if(curDay > RM_TOTAL_DAYS){
+  if(curDay === 0){
+    const startLabel = RM_START_DATE.toLocaleDateString(undefined,{day:'numeric', month:'long', year:'numeric'});
+    document.getElementById('rm-current-phase').textContent = 'விரைவில் தொடங்கும்';
+    document.getElementById('rm-current-week').textContent = startLabel + ' அன்று தொடங்குகிறது';
+    document.getElementById('rm-today-day').textContent = 'தொடக்க நாள்';
+    document.getElementById('rm-today-title').textContent = `Day 1 — ${RM_ROADMAP[0].t} (${startLabel})`;
+    document.getElementById('rm-mark-done').style.display = 'none';
+  } else if(curDay > RM_TOTAL_DAYS){
+    document.getElementById('rm-current-phase').textContent = '🎉 முடிந்தது!';
+    document.getElementById('rm-current-week').textContent = '120/120 நாட்கள் நிறைவு';
     document.getElementById('rm-today-day').textContent = '🎉 முடிந்தது!';
     document.getElementById('rm-today-title').textContent = '120 நாட்கள் பாதையும் நிறைவு செய்துவிட்டீர்கள்!';
     document.getElementById('rm-mark-done').style.display = 'none';
   } else {
-    document.getElementById('rm-today-day').textContent = 'Day ' + curDay;
+    const curEntry = RM_ROADMAP.find(e=>e.d===curDay);
+    document.getElementById('rm-current-phase').textContent = RM_PHASE_TA[curEntry.phase] || curEntry.phase;
+    document.getElementById('rm-current-week').textContent = 'வாரம் ' + curEntry.w;
+    document.getElementById('rm-today-day').textContent = 'Day ' + curDay + ' · இன்று';
     document.getElementById('rm-today-title').textContent = curEntry.t;
     document.getElementById('rm-mark-done').style.display = 'block';
+    document.getElementById('rm-mark-done').textContent = completed.has(curDay) ? 'முடிந்தது ✓ (தட்டி நீக்கு)' : 'இன்று முடிந்தது ✓';
   }
 
   // group by week
@@ -836,7 +994,7 @@ function renderRoadmap(){
     const doneInWeek = daysInWeek.filter(e=>completed.has(e.d)).length;
     const details = document.createElement('details');
     details.className = 'rm-week-group';
-    if(w === curEntry.w) details.open = true;
+    if(daysInWeek.some(e=>e.d===curDay)) details.open = true;
     const phaseLabel = RM_PHASE_TA[daysInWeek[0].phase] || daysInWeek[0].phase;
     details.innerHTML = `
       <summary class="rm-week-summary">
@@ -846,11 +1004,12 @@ function renderRoadmap(){
     `;
     daysInWeek.forEach(entry=>{
       const isDone = completed.has(entry.d);
+      const entryDate = rmDateForDay(entry.d).toLocaleDateString(undefined,{day:'numeric', month:'short'});
       const row = document.createElement('div');
-      row.className = 'rm-day-row' + (isDone ? ' done':'');
+      row.className = 'rm-day-row' + (isDone ? ' done':'') + (entry.d===curDay ? ' is-today':'');
       row.innerHTML = `
-        <div class="rm-day-check"><svg viewBox="0 0 10 10" fill="none"><path d="M1 5L4 8L9 1.5" stroke="#0d0f14" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="rm-day-num">Day ${entry.d}</div>
+        <div class="rm-day-check"><svg viewBox="0 0 10 10" fill="none"><path class="rm-check-path" d="M1 5L4 8L9 1.5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="rm-day-num">Day ${entry.d}<br><span style="opacity:.7">${entryDate}</span></div>
         <div class="rm-day-title">${entry.t}</div>
       `;
       row.addEventListener('click', ()=>{
@@ -868,10 +1027,12 @@ function renderRoadmap(){
 document.getElementById('rm-mark-done').addEventListener('click', ()=>{
   const completed = rmGetCompleted();
   const curDay = rmCurrentDay(completed);
-  if(curDay <= RM_TOTAL_DAYS){
-    completed.add(curDay);
+  if(curDay >= 1 && curDay <= RM_TOTAL_DAYS){
+    if(completed.has(curDay)) completed.delete(curDay); else completed.add(curDay);
     rmSaveCompleted(completed);
     renderRoadmap();
+    if(activeTab === 'day') renderDayView();
+    if(activeTab === 'month') renderMonthGrid();
   }
 });
 

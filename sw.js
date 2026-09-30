@@ -1,4 +1,4 @@
-const CACHE_NAME = 'naatkaatti-v4';
+const CACHE_NAME = 'naatkaatti-v6';
 const ASSETS = [
   './index.html',
   './manifest.json',
@@ -37,15 +37,12 @@ self.addEventListener('notificationclick', (event) => {
 
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      return cached || fetch(event.request).then((response) => {
-        return caches.open(CACHE_NAME).then((cache) => {
-          if (event.request.method === 'GET' && response.ok) {
-            cache.put(event.request, response.clone());
-          }
-          return response;
-        });
-      }).catch(() => cached);
-    })
+    fetch(event.request).then((response) => {
+      if (event.request.method === 'GET' && response.ok) {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+      }
+      return response;
+    }).catch(() => caches.match(event.request))
   );
 });
