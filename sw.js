@@ -1,4 +1,4 @@
-const CACHE_NAME = 'naatkaatti-v6';
+const CACHE_NAME = 'naatkaatti-v7';
 const ASSETS = [
   './index.html',
   './manifest.json',
