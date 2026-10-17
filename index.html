@@ -196,8 +196,6 @@
   }
   .day-cell.holiday .t-num{color:var(--danger);}
   .day-cell .holiday-dot{position:absolute; top:6px; right:6px; width:5px;height:5px;border-radius:50%; background:var(--danger);}
-  .day-cell .ds-dot{position:absolute; top:6px; left:6px; width:5px;height:5px;border-radius:50%; background:#6b4fa0; box-shadow:inset 0 0 0 1px rgba(107,79,160,0.5);}
-  .day-cell .ds-dot.ds-done{background:var(--accent);}
 
   /* ---- Day view ---- */
   #view-day{flex:1; overflow-y:auto;}
@@ -291,6 +289,46 @@
   }
   .btn-secondary:active{ box-shadow: inset 0 1px 4px rgba(0,0,0,0.18), inset 0 0 0 1px var(--glass-border); }
 
+  /* ---- Expense view ---- */
+  .day-cell .expense-dot{position:absolute; bottom:5px; right:5px; width:4px;height:4px;border-radius:50%; background:#2f6f4f;}
+  #view-expense{flex:1; overflow:hidden;}
+  .ex-scroll{flex:1; overflow-y:auto; padding:0 16px 100px;}
+  .ex-total-card{
+    background:var(--glass-bg); backdrop-filter:blur(var(--glass-blur)); -webkit-backdrop-filter:blur(var(--glass-blur)); border:1px solid var(--glass-border);
+    border-radius:18px; padding:16px 18px; margin-bottom:16px; text-align:center;
+  }
+  .ex-total-label{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);}
+  .ex-total-amount{font-family:'Space Grotesk',sans-serif; font-size:28px; font-weight:700; margin-top:4px; color:var(--today-fill);}
+
+  .ex-card{
+    background:var(--glass-bg); backdrop-filter:blur(var(--glass-blur)); -webkit-backdrop-filter:blur(var(--glass-blur)); border:1px solid var(--glass-border);
+    border-radius:14px; padding:11px 13px; margin-bottom:9px; display:flex; align-items:center; gap:11px; cursor:pointer;
+  }
+  .ex-card:active{ box-shadow: inset 0 1px 4px rgba(0,0,0,0.18); }
+  .ex-icon{width:34px;height:34px;border-radius:10px; background:var(--accent-soft); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;}
+  .ex-info{flex:1; min-width:0;}
+  .ex-title{font-size:13.5px; font-weight:600;}
+  .ex-meta{font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); margin-top:2px;}
+  .ex-amount{font-family:'Space Grotesk',sans-serif; font-size:14.5px; font-weight:700;}
+  .ex-del{background:none; border:none; color:var(--muted); font-size:17px; cursor:pointer; padding:2px 4px; flex-shrink:0;}
+
+  .ex-summary-card{
+    background:var(--glass-bg-strong); backdrop-filter:blur(var(--glass-blur)); -webkit-backdrop-filter:blur(var(--glass-blur)); border:1px solid var(--glass-border);
+    border-radius:18px; padding:16px; margin-bottom:24px;
+  }
+  .ex-summary-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;}
+  .ex-summary-num{font-family:'Space Grotesk',sans-serif; font-size:19px; font-weight:700;}
+  .ex-summary-sub{font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); margin-top:2px;}
+  .ex-summary-high{font-size:12px; color:var(--muted); margin-bottom:12px;}
+  .ex-week-chart{display:flex; align-items:flex-end; gap:5px; height:70px; margin-bottom:14px;}
+  .ex-week-col{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%;}
+  .ex-week-bar{width:100%; background:var(--today-fill); border-radius:4px 4px 0 0; min-height:2px; opacity:0.85;}
+  .ex-cat-row{display:flex; align-items:center; gap:9px; padding:7px 0; border-top:1px solid var(--glass-border);}
+  .ex-cat-row:first-of-type{border-top:none;}
+  .ex-cat-name{flex:1; font-size:13px;}
+  .ex-cat-amt{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted);}
+  .ex-empty{text-align:center; color:var(--muted); font-size:12.5px; padding:20px 0;}
+
   nav.tabbar{
     display:flex; background:var(--glass-bg-strong); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:none; border-top:1px solid var(--glass-border); padding:10px 16px calc(10px + env(safe-area-inset-bottom));
     box-shadow: 0 -6px 20px rgba(0,0,0,0.12);
@@ -309,7 +347,6 @@
   .tab-btn svg{width:20px;height:20px;}
 
   /* ---- Roadmap view ---- */
-  #view-roadmap{flex:1; overflow:hidden;}
   .rm-scroll{flex:1; overflow-y:auto; padding:16px 16px 100px;}
   .rm-header-card{
     display:flex; align-items:center; gap:16px; background:var(--glass-bg); backdrop-filter:blur(var(--glass-blur)); -webkit-backdrop-filter:blur(var(--glass-blur)); border:1px solid var(--glass-border); border-radius:20px; padding:16px;
@@ -413,14 +450,6 @@
       <div class="holiday-banner" id="holiday-banner" style="display:none;">🎉 <span id="holiday-name"></span></div>
     </div>
 
-    <div id="dv-ds-section" style="display:none;">
-      <div class="section-label">Data Science பாதை</div>
-      <div class="rm-today-card" id="dv-ds-card" style="margin:0 16px 18px;">
-        <div class="rm-today-day" id="dv-ds-day">Day 1</div>
-        <div class="rm-today-title" id="dv-ds-title">Topic</div>
-        <button class="btn btn-primary" id="dv-ds-toggle" style="margin-top:12px;">முடிந்தது ✓</button>
-      </div>
-    </div>
 
     <div class="section-label">Free / Busy · 6 AM – 11 PM</div>
     <div class="freebusy">
@@ -432,37 +461,46 @@
     <div class="event-list" id="event-list"></div>
   </div>
 
-  <!-- ROADMAP VIEW -->
-  <div class="view" id="view-roadmap">
-    <div class="rm-scroll">
-      <div class="rm-header-card">
-        <div class="rm-ring-wrap">
-          <svg width="64" height="64" viewBox="0 0 64 64">
-            <circle class="rm-ring-bg" cx="32" cy="32" r="27"></circle>
-            <circle class="rm-ring-fg" id="rm-ring-fg" cx="32" cy="32" r="27" stroke-dasharray="0 170"></circle>
-          </svg>
-          <div class="rm-ring-label" id="rm-ring-label">0/120</div>
-        </div>
-        <div class="rm-header-text">
-          <div class="rm-eyebrow">Data Science பாதை · 6 மாதம்</div>
-          <div class="rm-phase" id="rm-current-phase">Foundations</div>
-          <div class="rm-week" id="rm-current-week">வாரம் 1</div>
-        </div>
+  <!-- EXPENSE VIEW -->
+  <div class="view" id="view-expense">
+    <div class="nav-row" id="expense-nav" style="display:none; padding:0 16px 12px;">
+      <button id="prev-expense-day">&#8249;</button>
+      <div class="nav-title">
+        <div class="t-month" id="ex-tamil-label">சித்திரை 1</div>
+        <div class="g-month" id="ex-date-label">14 April</div>
+      </div>
+      <button id="next-expense-day">&#8250;</button>
+    </div>
+    <div class="ex-scroll">
+      <div class="ex-total-card">
+        <div class="ex-total-label">இன்றைய செலவு</div>
+        <div class="ex-total-amount" id="ex-day-total">ரூ0</div>
       </div>
 
-      <div class="section-label">இன்றைய தலைப்பு</div>
-      <div class="rm-today-card" id="rm-today-card">
-        <div class="rm-today-day" id="rm-today-day">Day 1</div>
-        <div class="rm-today-title" id="rm-today-title">Data Science அறிமுகம்</div>
-        <button class="btn btn-primary" id="rm-mark-done" style="margin-top:14px;">இன்று முடிந்தது ✓</button>
-      </div>
+      <div class="section-label">பொருட்கள்</div>
+      <div id="ex-list"></div>
 
-      <div class="section-label">முழு பாதை · 120 நாட்கள்</div>
-      <div id="rm-weeks-list"></div>
+      <div class="section-label">இந்த மாதம்</div>
+      <div class="ex-summary-card">
+        <div class="ex-summary-grid">
+          <div>
+            <div class="ex-summary-num" id="ex-month-total">ரூ0</div>
+            <div class="ex-summary-sub">மொத்த செலவு</div>
+          </div>
+          <div>
+            <div class="ex-summary-num" id="ex-month-avg">ரூ0</div>
+            <div class="ex-summary-sub">நாள் சராசரி</div>
+          </div>
+        </div>
+        <div class="ex-summary-high" id="ex-month-high"></div>
+        <div class="ex-week-chart" id="ex-month-chart"></div>
+        <div id="ex-cat-breakdown"></div>
+      </div>
     </div>
   </div>
 
   <button class="fab" id="fab-add">+</button>
+  <button class="fab" id="fab-expense" style="display:none;">+</button>
 
   <nav class="tabbar">
     <button class="tab-btn active" data-tab="month">
@@ -473,11 +511,63 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
       தினம்
     </button>
-    <button class="tab-btn" data-tab="roadmap">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-      பாதை
+    <button class="tab-btn" data-tab="expense">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10h18M7 15h2M3 6h18v12H3z"/></svg>
+      செலவு
     </button>
   </nav>
+</div>
+
+<!-- Add/Edit Expense Modal -->
+<div class="modal-overlay" id="ex-modal-overlay">
+  <div class="modal">
+    <h2 id="ex-modal-title">புதிய செலவு</h2>
+    <div class="field">
+      <label>தலைப்பு</label>
+      <input type="text" id="ex-f-title" placeholder="எ.கா. மதிய உணவு">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>தொகை (ரூ)</label>
+        <input type="number" id="ex-f-amount" placeholder="0" inputmode="decimal">
+      </div>
+      <div class="field">
+        <label>நேரம்</label>
+        <input type="time" id="ex-f-time" value="12:00">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>வகை</label>
+        <select id="ex-f-category">
+          <option value="Food">🍔 உணவு</option>
+          <option value="Transport">🚗 பயணம்</option>
+          <option value="Groceries">🛒 மளிகை</option>
+          <option value="Bills">💡 பில்கள்</option>
+          <option value="Shopping">🛍️ ஷாப்பிங்</option>
+          <option value="Health">🏥 சுகாதாரம்</option>
+          <option value="Entertainment">🎬 பொழுதுபோக்கு</option>
+          <option value="Other">📦 மற்றவை</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>முறை</label>
+        <select id="ex-f-mode">
+          <option value="Cash">Cash</option>
+          <option value="UPI">UPI</option>
+          <option value="Card">Card</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>குறிப்பு (விருப்பம்)</label>
+      <input type="text" id="ex-f-note" placeholder="விருப்பம்">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" id="ex-modal-cancel">ரத்து</button>
+      <button class="btn btn-primary" id="ex-modal-save">சேமி</button>
+    </div>
+  </div>
 </div>
 
 <!-- Add/Edit Event Modal -->
@@ -698,6 +788,167 @@ async function saveEvents(d, events){
   catch(e){ console.error('save failed', e); }
 }
 
+// ============ Expense Tracker ============
+let expenseDate = new Date(); expenseDate.setHours(0,0,0,0);
+let editingExpenseId = null;
+const EX_CATEGORIES = {
+  Food:'🍔', Transport:'🚗', Groceries:'🛒', Bills:'💡',
+  Shopping:'🛍️', Health:'🏥', Entertainment:'🎬', Other:'📦'
+};
+const EX_CAT_LABELS_TA = {
+  Food:'உணவு', Transport:'பயணம்', Groceries:'மளிகை', Bills:'பில்கள்',
+  Shopping:'ஷாப்பிங்', Health:'சுகாதாரம்', Entertainment:'பொழுதுபோக்கு', Other:'மற்றவை'
+};
+function exDateKey(d){ return 'expense:' + d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+async function getExpenses(d){
+  try{
+    const raw = localStorage.getItem(exDateKey(d));
+    return raw ? JSON.parse(raw) : [];
+  }catch(e){ return []; }
+}
+async function saveExpenses(d, items){
+  try{ localStorage.setItem(exDateKey(d), JSON.stringify(items)); }
+  catch(e){ console.error('expense save failed', e); }
+}
+function exFmt(n){ return 'ரூ' + Math.round(n).toLocaleString('en-IN'); }
+function exTo12(t){
+  let [h,m] = t.split(':').map(Number);
+  const ap = h>=12?'PM':'AM';
+  let h12 = h%12; if(h12===0) h12=12;
+  return `${h12}:${String(m).padStart(2,'0')} ${ap}`;
+}
+
+async function renderExpenseView(){
+  document.getElementById('ex-tamil-label').textContent = tamilMonthInfo(expenseDate).name + ' ' + tamilMonthInfo(expenseDate).day;
+  document.getElementById('ex-date-label').textContent = expenseDate.toLocaleDateString(undefined,{day:'numeric', month:'short'});
+
+  const items = await getExpenses(expenseDate);
+  items.sort((a,b)=>a.time.localeCompare(b.time));
+  const dayTotal = items.reduce((s,i)=>s+Number(i.amount),0);
+  document.getElementById('ex-day-total').textContent = exFmt(dayTotal);
+
+  const list = document.getElementById('ex-list');
+  list.innerHTML = '';
+  if(items.length===0){
+    list.innerHTML = '<div class="ex-empty">இந்த நாளுக்கு செலவுகள் இல்லை.<br>கீழே உள்ள + பொத்தானை தட்டவும்.</div>';
+  } else {
+    items.forEach(it=>{
+      const card = document.createElement('div');
+      card.className = 'ex-card';
+      card.innerHTML = `
+        <div class="ex-icon">${EX_CATEGORIES[it.category]||'📦'}</div>
+        <div class="ex-info">
+          <div class="ex-title">${it.title}</div>
+          <div class="ex-meta">${exTo12(it.time)} · ${it.mode}</div>
+        </div>
+        <div class="ex-amount">${exFmt(it.amount)}</div>
+        <button class="ex-del" data-id="${it.id}">✕</button>
+      `;
+      card.addEventListener('click', (e)=>{
+        if(e.target.classList.contains('ex-del')) return;
+        openExpenseModal(it);
+      });
+      card.querySelector('.ex-del').addEventListener('click', async (e)=>{
+        e.stopPropagation();
+        const cur = await getExpenses(expenseDate);
+        await saveExpenses(expenseDate, cur.filter(x=>x.id!==it.id));
+        renderExpenseView();
+      });
+      list.appendChild(card);
+    });
+  }
+
+  await renderExpenseMonthSummary();
+}
+
+async function renderExpenseMonthSummary(){
+  const year = expenseDate.getFullYear(), month = expenseDate.getMonth();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const allDays = [];
+  for(let d=1; d<=daysInMonth; d++) allDays.push(new Date(year, month, d));
+
+  const results = await Promise.all(allDays.map(async d=>{
+    const items = await getExpenses(d);
+    const total = items.reduce((s,i)=>s+Number(i.amount),0);
+    return {date:d, total, items};
+  }));
+
+  const monthTotal = results.reduce((s,r)=>s+r.total,0);
+  const daysSoFar = results.filter(r=>r.date<=new Date()).length || 1;
+  const avg = monthTotal/daysSoFar;
+  let highest = results[0];
+  results.forEach(r=>{ if(r.total>highest.total) highest = r; });
+
+  document.getElementById('ex-month-total').textContent = exFmt(monthTotal);
+  document.getElementById('ex-month-avg').textContent = exFmt(avg);
+  document.getElementById('ex-month-high').textContent = highest.total>0
+    ? `அதிக செலவு நாள்: ${highest.date.toLocaleDateString(undefined,{day:'numeric',month:'short'})} — ${exFmt(highest.total)}`
+    : 'இந்த மாதம் இன்னும் செலவுகள் இல்லை';
+
+  const chart = document.getElementById('ex-month-chart');
+  chart.innerHTML = '';
+  const maxTotal = Math.max(...results.map(r=>r.total), 1);
+  results.forEach(r=>{
+    const pct = (r.total/maxTotal)*100;
+    const col = document.createElement('div');
+    col.className = 'ex-week-col';
+    col.title = r.date.toLocaleDateString(undefined,{day:'numeric',month:'short'}) + ': ' + exFmt(r.total);
+    col.innerHTML = `<div class="ex-week-bar" style="height:${Math.max(pct,2)}%"></div>`;
+    chart.appendChild(col);
+  });
+
+  const catTotals = {};
+  results.forEach(r=> r.items.forEach(it=>{ catTotals[it.category] = (catTotals[it.category]||0) + Number(it.amount); }));
+  const catEl = document.getElementById('ex-cat-breakdown');
+  catEl.innerHTML = '';
+  Object.entries(catTotals).sort((a,b)=>b[1]-a[1]).forEach(([cat,amt])=>{
+    const row = document.createElement('div');
+    row.className = 'ex-cat-row';
+    row.innerHTML = `<span>${EX_CATEGORIES[cat]||'📦'}</span><span class="ex-cat-name">${EX_CAT_LABELS_TA[cat]||cat}</span><span class="ex-cat-amt">${exFmt(amt)}</span>`;
+    catEl.appendChild(row);
+  });
+}
+
+function openExpenseModal(item){
+  editingExpenseId = item ? item.id : null;
+  document.getElementById('ex-modal-title').textContent = item ? 'செலவை திருத்து' : 'புதிய செலவு';
+  document.getElementById('ex-f-title').value = item ? item.title : '';
+  document.getElementById('ex-f-amount').value = item ? item.amount : '';
+  document.getElementById('ex-f-time').value = item ? item.time : new Date().toTimeString().slice(0,5);
+  document.getElementById('ex-f-category').value = item ? item.category : 'Food';
+  document.getElementById('ex-f-mode').value = item ? item.mode : 'UPI';
+  document.getElementById('ex-f-note').value = item ? (item.note||'') : '';
+  document.getElementById('ex-modal-overlay').classList.add('active');
+}
+function closeExpenseModal(){ document.getElementById('ex-modal-overlay').classList.remove('active'); }
+
+document.getElementById('fab-expense').addEventListener('click', ()=> openExpenseModal(null));
+document.getElementById('ex-modal-cancel').addEventListener('click', closeExpenseModal);
+document.getElementById('ex-modal-overlay').addEventListener('click', (e)=>{ if(e.target.id==='ex-modal-overlay') closeExpenseModal(); });
+
+document.getElementById('ex-modal-save').addEventListener('click', async ()=>{
+  const title = document.getElementById('ex-f-title').value.trim();
+  const amount = parseFloat(document.getElementById('ex-f-amount').value);
+  if(!title || !amount || amount<=0){ return; }
+  const time = document.getElementById('ex-f-time').value;
+  const category = document.getElementById('ex-f-category').value;
+  const mode = document.getElementById('ex-f-mode').value;
+  const note = document.getElementById('ex-f-note').value.trim();
+
+  let items = await getExpenses(expenseDate);
+  if(editingExpenseId){
+    items = items.map(it => it.id===editingExpenseId ? {...it, title, amount, time, category, mode, note} : it);
+  } else {
+    items.push({id: Date.now().toString(), title, amount, time, category, mode, note});
+  }
+  await saveExpenses(expenseDate, items);
+  closeExpenseModal();
+  renderExpenseView();
+});
+
+document.getElementById('prev-expense-day').addEventListener('click', ()=>{ expenseDate.setDate(expenseDate.getDate()-1); renderExpenseView(); });
+document.getElementById('next-expense-day').addEventListener('click', ()=>{ expenseDate.setDate(expenseDate.getDate()+1); renderExpenseView(); });
+
 // ============ Festivals & Government Holidays ============
 // Fixed-date holidays that repeat every year
 const FIXED_HOLIDAYS = [
@@ -815,17 +1066,22 @@ async function renderMonthGrid(){
   for(const cell of cells){
     const tInfo = tamilMonthInfo(cell.date);
     const holidayName = getHoliday(cell.date);
-    const dsEntry = rmEntryForDate(cell.date);
-    const dsDone = dsEntry ? rmGetCompleted().has(dsEntry.d) : false;
     const div = document.createElement('div');
     div.className = 'day-cell' + (cell.other ? ' other-month':'') + (isToday(cell.date) ? ' today':'') + (holidayName ? ' holiday':'');
     if(holidayName) div.title = holidayName;
-    if(dsEntry) div.title = (div.title ? div.title + ' · ' : '') + 'DS Day ' + dsEntry.d + ': ' + dsEntry.t;
     div.innerHTML = `<div class="t-num">${tInfo.day}</div><div class="g-num">${cell.date.getDate()}</div>`
-      + (holidayName ? '<div class="holiday-dot"></div>' : '')
-      + (dsEntry ? `<div class="ds-dot${dsDone ? ' ds-done':''}"></div>` : '');
+      + (holidayName ? '<div class="holiday-dot"></div>' : '');
     div.addEventListener('click', ()=>{ selectedDate = new Date(cell.date); switchTab('day'); });
     grid.appendChild(div);
+
+    // expense dot (fire and forget)
+    getExpenses(cell.date).then(exps=>{
+      if(exps.length>0){
+        const dot = document.createElement('div');
+        dot.className = 'expense-dot';
+        div.appendChild(dot);
+      }
+    });
 
     // event dot (fire and forget)
     getEvents(cell.date).then(evts=>{
@@ -850,27 +1106,6 @@ async function renderDayView(){
   document.getElementById('d-tamil-label').textContent = `${tInfo.name} ${tInfo.day}`;
   document.getElementById('dh-tdate').textContent = `${tInfo.name} ${tInfo.day}, ${tWeekday}`;
   document.getElementById('dh-tsub').textContent = `தமிழ் ஆண்டு: ${tYear}`;
-
-  // Data Science roadmap card for this date
-  const dsEntry = rmEntryForDate(selectedDate);
-  const dsSection = document.getElementById('dv-ds-section');
-  if(dsEntry){
-    const completed = rmGetCompleted();
-    const isDone = completed.has(dsEntry.d);
-    dsSection.style.display = 'block';
-    document.getElementById('dv-ds-day').textContent = 'Day ' + dsEntry.d + ' · ' + (RM_PHASE_TA[dsEntry.phase]||dsEntry.phase);
-    document.getElementById('dv-ds-title').textContent = dsEntry.t;
-    const toggleBtn = document.getElementById('dv-ds-toggle');
-    toggleBtn.textContent = isDone ? 'முடிந்தது ✓ (தட்டி நீக்கு)' : 'இன்று முடிந்தது ✓';
-    toggleBtn.onclick = ()=>{
-      const c = rmGetCompleted();
-      if(c.has(dsEntry.d)) c.delete(dsEntry.d); else c.add(dsEntry.d);
-      rmSaveCompleted(c);
-      renderDayView();
-    };
-  } else {
-    dsSection.style.display = 'none';
-  }
 
   const holidayName = getHoliday(selectedDate);
   const banner = document.getElementById('holiday-banner');
@@ -983,130 +1218,6 @@ document.getElementById('modal-save').addEventListener('click', async ()=>{
 
 // ============ Navigation ============
 
-// ============ Data Science Roadmap ============
-const RM_TOTAL_DAYS = 120;
-const RM_ROADMAP = [{"d":1,"w":1,"phase":"Foundations","t":"Data Science-அறிமுகம் & career paths"},{"d":2,"w":1,"phase":"Foundations","t":"Python setup, variables, data types"},{"d":3,"w":1,"phase":"Foundations","t":"Python control flow - if/else, loops"},{"d":4,"w":1,"phase":"Foundations","t":"Python functions & modules"},{"d":5,"w":1,"phase":"Foundations","t":"Python data structures - list/dict/tuple/set"},{"d":6,"w":2,"phase":"Foundations","t":"Python file handling + mini practice"},{"d":7,"w":2,"phase":"Foundations","t":"NumPy அறிமுகம் - arrays"},{"d":8,"w":2,"phase":"Foundations","t":"NumPy operations & broadcasting"},{"d":9,"w":2,"phase":"Foundations","t":"Pandas அறிமுகம் - Series/DataFrame"},{"d":10,"w":2,"phase":"Foundations","t":"Pandas - data loading & inspection"},{"d":11,"w":3,"phase":"Foundations","t":"Pandas filtering & selection"},{"d":12,"w":3,"phase":"Foundations","t":"Pandas groupby & aggregation"},{"d":13,"w":3,"phase":"Foundations","t":"Pandas merge & join"},{"d":14,"w":3,"phase":"Foundations","t":"Handling missing data"},{"d":15,"w":3,"phase":"Foundations","t":"Mini Project: clean & explore a dataset"},{"d":16,"w":4,"phase":"Foundations","t":"Statistics basics - mean/median/mode/variance"},{"d":17,"w":4,"phase":"Foundations","t":"Probability basics"},{"d":18,"w":4,"phase":"Foundations","t":"Distributions - normal & binomial"},{"d":19,"w":4,"phase":"Foundations","t":"Descriptive statistics with Pandas"},{"d":20,"w":4,"phase":"Foundations","t":"Week review & self-quiz"},{"d":21,"w":5,"phase":"Statistics & SQL","t":"Inferential statistics அறிமுகம்"},{"d":22,"w":5,"phase":"Statistics & SQL","t":"Hypothesis testing"},{"d":23,"w":5,"phase":"Statistics & SQL","t":"Correlation & covariance"},{"d":24,"w":5,"phase":"Statistics & SQL","t":"SQL & databases அறிமுகம்"},{"d":25,"w":5,"phase":"Statistics & SQL","t":"SQL - SELECT, WHERE, ORDER BY"},{"d":26,"w":6,"phase":"Statistics & SQL","t":"SQL JOINs"},{"d":27,"w":6,"phase":"Statistics & SQL","t":"SQL GROUP BY & aggregate functions"},{"d":28,"w":6,"phase":"Statistics & SQL","t":"SQL subqueries"},{"d":29,"w":6,"phase":"Statistics & SQL","t":"SQL practice project"},{"d":30,"w":6,"phase":"Statistics & SQL","t":"Matplotlib அறிமுகம்"},{"d":31,"w":7,"phase":"Statistics & SQL","t":"Matplotlib customization"},{"d":32,"w":7,"phase":"Statistics & SQL","t":"Seaborn - statistical plots"},{"d":33,"w":7,"phase":"Statistics & SQL","t":"Data visualization best practices"},{"d":34,"w":7,"phase":"Statistics & SQL","t":"Exploratory Data Analysis (EDA) techniques"},{"d":35,"w":7,"phase":"Statistics & SQL","t":"EDA mini project"},{"d":36,"w":8,"phase":"Statistics & SQL","t":"Power BI / Excel dashboards அறிமுகம்"},{"d":37,"w":8,"phase":"Statistics & SQL","t":"Building dashboards"},{"d":38,"w":8,"phase":"Statistics & SQL","t":"Storytelling with data"},{"d":39,"w":8,"phase":"Statistics & SQL","t":"Weekly project: full EDA + report"},{"d":40,"w":8,"phase":"Statistics & SQL","t":"Review & quiz"},{"d":41,"w":9,"phase":"Machine Learning","t":"Machine Learning அறிமுகம் & types"},{"d":42,"w":9,"phase":"Machine Learning","t":"Train/test split & overfitting"},{"d":43,"w":9,"phase":"Machine Learning","t":"Linear Regression - theory"},{"d":44,"w":9,"phase":"Machine Learning","t":"Linear Regression with scikit-learn"},{"d":45,"w":9,"phase":"Machine Learning","t":"Regression evaluation metrics"},{"d":46,"w":10,"phase":"Machine Learning","t":"Logistic Regression"},{"d":47,"w":10,"phase":"Machine Learning","t":"Classification metrics - accuracy/precision/recall/F1"},{"d":48,"w":10,"phase":"Machine Learning","t":"Decision Trees"},{"d":49,"w":10,"phase":"Machine Learning","t":"Random Forests"},{"d":50,"w":10,"phase":"Machine Learning","t":"Cross-validation & model tuning basics"},{"d":51,"w":11,"phase":"Machine Learning","t":"K-Nearest Neighbors (KNN)"},{"d":52,"w":11,"phase":"Machine Learning","t":"Support Vector Machines (SVM)"},{"d":53,"w":11,"phase":"Machine Learning","t":"Naive Bayes"},{"d":54,"w":11,"phase":"Machine Learning","t":"Feature engineering basics"},{"d":55,"w":11,"phase":"Machine Learning","t":"Feature scaling & encoding"},{"d":56,"w":12,"phase":"Machine Learning","t":"Handling imbalanced data"},{"d":57,"w":12,"phase":"Machine Learning","t":"Hyperparameter tuning - GridSearchCV"},{"d":58,"w":12,"phase":"Machine Learning","t":"Pipelines in scikit-learn"},{"d":59,"w":12,"phase":"Machine Learning","t":"ML mini project - classification"},{"d":60,"w":12,"phase":"Machine Learning","t":"Review & quiz"},{"d":61,"w":13,"phase":"Machine Learning","t":"Unsupervised learning அறிமுகம்"},{"d":62,"w":13,"phase":"Machine Learning","t":"K-Means clustering"},{"d":63,"w":13,"phase":"Machine Learning","t":"Hierarchical clustering"},{"d":64,"w":13,"phase":"Machine Learning","t":"PCA & dimensionality reduction"},{"d":65,"w":13,"phase":"Machine Learning","t":"Clustering mini project"},{"d":66,"w":14,"phase":"Machine Learning","t":"Ensemble methods - bagging & boosting"},{"d":67,"w":14,"phase":"Machine Learning","t":"XGBoost / LightGBM அறிமுகம்"},{"d":68,"w":14,"phase":"Machine Learning","t":"Model interpretability - SHAP & feature importance"},{"d":69,"w":14,"phase":"Machine Learning","t":"End-to-end ML project"},{"d":70,"w":14,"phase":"Machine Learning","t":"Review & quiz"},{"d":71,"w":15,"phase":"Advanced Topics","t":"Deep Learning & Neural Networks அறிமுகம்"},{"d":72,"w":15,"phase":"Advanced Topics","t":"Perceptron & activation functions"},{"d":73,"w":15,"phase":"Advanced Topics","t":"Building a simple NN - Keras/TensorFlow"},{"d":74,"w":15,"phase":"Advanced Topics","t":"Training & backpropagation basics"},{"d":75,"w":15,"phase":"Advanced Topics","t":"CNN அறிமுகம் - images"},{"d":76,"w":16,"phase":"Advanced Topics","t":"CNN practice project"},{"d":77,"w":16,"phase":"Advanced Topics","t":"RNN / LSTM அறிமுகம் - sequences"},{"d":78,"w":16,"phase":"Advanced Topics","t":"NLP அறிமுகம்"},{"d":79,"w":16,"phase":"Advanced Topics","t":"Text preprocessing - tokenization, stopwords"},{"d":80,"w":16,"phase":"Advanced Topics","t":"Bag of Words & TF-IDF"},{"d":81,"w":17,"phase":"Advanced Topics","t":"Sentiment analysis mini project"},{"d":82,"w":17,"phase":"Advanced Topics","t":"Time series analysis அறிமுகம்"},{"d":83,"w":17,"phase":"Advanced Topics","t":"Time series forecasting basics"},{"d":84,"w":17,"phase":"Advanced Topics","t":"Big Data concepts - Hadoop/Spark overview"},{"d":85,"w":17,"phase":"Advanced Topics","t":"APIs & web scraping basics"},{"d":86,"w":18,"phase":"Advanced Topics","t":"Git & version control"},{"d":87,"w":18,"phase":"Advanced Topics","t":"GitHub for portfolio projects"},{"d":88,"w":18,"phase":"Advanced Topics","t":"Cloud platforms அறிமுகம் - AWS/GCP basics"},{"d":89,"w":18,"phase":"Advanced Topics","t":"Deploying a model - Flask/Streamlit"},{"d":90,"w":18,"phase":"Advanced Topics","t":"Review & quiz"},{"d":91,"w":19,"phase":"Capstone","t":"Capstone project - topic & data selection"},{"d":92,"w":19,"phase":"Capstone","t":"Capstone - data collection & cleaning"},{"d":93,"w":19,"phase":"Capstone","t":"Capstone - EDA & visualization"},{"d":94,"w":19,"phase":"Capstone","t":"Capstone - feature engineering"},{"d":95,"w":19,"phase":"Capstone","t":"Capstone - model building"},{"d":96,"w":20,"phase":"Capstone","t":"Capstone - model evaluation & tuning"},{"d":97,"w":20,"phase":"Capstone","t":"Capstone - deployment"},{"d":98,"w":20,"phase":"Capstone","t":"Capstone - documentation & README"},{"d":99,"w":20,"phase":"Capstone","t":"Capstone - polish & review"},{"d":100,"w":20,"phase":"Capstone","t":"Capstone presentation prep"},{"d":101,"w":21,"phase":"Job Readiness","t":"Resume building for Data Science"},{"d":102,"w":21,"phase":"Job Readiness","t":"LinkedIn profile optimization"},{"d":103,"w":21,"phase":"Job Readiness","t":"Portfolio website basics"},{"d":104,"w":21,"phase":"Job Readiness","t":"Common DS interview questions - technical"},{"d":105,"w":21,"phase":"Job Readiness","t":"SQL interview practice"},{"d":106,"w":22,"phase":"Job Readiness","t":"Statistics interview practice"},{"d":107,"w":22,"phase":"Job Readiness","t":"ML concepts interview practice"},{"d":108,"w":22,"phase":"Job Readiness","t":"Case study interviews"},{"d":109,"w":22,"phase":"Job Readiness","t":"Behavioral interview prep"},{"d":110,"w":22,"phase":"Job Readiness","t":"Mock interview practice"},{"d":111,"w":23,"phase":"Job Readiness","t":"Networking strategies"},{"d":112,"w":23,"phase":"Job Readiness","t":"Job search platforms & strategy"},{"d":113,"w":23,"phase":"Job Readiness","t":"Applications & cover letters"},{"d":114,"w":23,"phase":"Job Readiness","t":"Salary negotiation basics"},{"d":115,"w":23,"phase":"Job Readiness","t":"Continuing education - staying updated"},{"d":116,"w":24,"phase":"Job Readiness","t":"Second portfolio project polish"},{"d":117,"w":24,"phase":"Job Readiness","t":"Final resume/portfolio review"},{"d":118,"w":24,"phase":"Job Readiness","t":"Full mock technical interview"},{"d":119,"w":24,"phase":"Job Readiness","t":"Final concept review - all phases"},{"d":120,"w":24,"phase":"Job Readiness","t":"Wrap-up & next steps planning"}]
-;
-const RM_PHASE_TA = {'Foundations': 'அடிப்படைகள்', 'Statistics & SQL': 'புள்ளியியல் & SQL', 'Machine Learning': 'மெஷின் லேர்னிங்', 'Advanced Topics': 'மேம்பட்ட தலைப்புகள்', 'Capstone': 'காப்ஸ்டோன் திட்டம்', 'Job Readiness': 'வேலை தயார்நிலை'};
-const RM_STORE_KEY = 'ds-roadmap-progress';
-const RM_START_DATE = new Date(2026, 9, 7); // Oct 7, 2026 = Day 1 (புரட்டாசி 20)
-
-function rmDayForDate(date){
-  const d0 = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  const diff = Math.round((d0 - RM_START_DATE) / 86400000) + 1;
-  return diff;
-}
-function rmDateForDay(dayNum){
-  const d = new Date(RM_START_DATE);
-  d.setDate(d.getDate() + (dayNum - 1));
-  return d;
-}
-function rmEntryForDate(date){
-  const dayNum = rmDayForDate(date);
-  if(dayNum < 1 || dayNum > RM_TOTAL_DAYS) return null;
-  return RM_ROADMAP.find(e=>e.d===dayNum) || null;
-}
-
-function rmGetCompleted(){
-  try{
-    const raw = localStorage.getItem(RM_STORE_KEY);
-    return raw ? new Set(JSON.parse(raw)) : new Set();
-  }catch(e){ return new Set(); }
-}
-function rmSaveCompleted(set){
-  try{ localStorage.setItem(RM_STORE_KEY, JSON.stringify([...set])); }
-  catch(e){ console.error('roadmap save failed', e); }
-}
-function rmCurrentDay(completed){
-  const todayNum = rmDayForDate(new Date());
-  if(todayNum < 1) return 0; // roadmap hasn't started yet
-  if(todayNum > RM_TOTAL_DAYS) return RM_TOTAL_DAYS + 1; // finished
-  return todayNum;
-}
-
-function renderRoadmap(){
-  const completed = rmGetCompleted();
-  const doneCount = completed.size;
-  const curDay = rmCurrentDay(completed);
-
-  const circumference = 2*Math.PI*27;
-  const frac = doneCount/RM_TOTAL_DAYS;
-  document.getElementById('rm-ring-fg').style.strokeDasharray = `${circumference*frac} ${circumference}`;
-  document.getElementById('rm-ring-label').textContent = `${doneCount}/${RM_TOTAL_DAYS}`;
-
-  if(curDay === 0){
-    const startLabel = RM_START_DATE.toLocaleDateString(undefined,{day:'numeric', month:'long', year:'numeric'});
-    document.getElementById('rm-current-phase').textContent = 'விரைவில் தொடங்கும்';
-    document.getElementById('rm-current-week').textContent = startLabel + ' அன்று தொடங்குகிறது';
-    document.getElementById('rm-today-day').textContent = 'தொடக்க நாள்';
-    document.getElementById('rm-today-title').textContent = `Day 1 — ${RM_ROADMAP[0].t} (${startLabel})`;
-    document.getElementById('rm-mark-done').style.display = 'none';
-  } else if(curDay > RM_TOTAL_DAYS){
-    document.getElementById('rm-current-phase').textContent = '🎉 முடிந்தது!';
-    document.getElementById('rm-current-week').textContent = '120/120 நாட்கள் நிறைவு';
-    document.getElementById('rm-today-day').textContent = '🎉 முடிந்தது!';
-    document.getElementById('rm-today-title').textContent = '120 நாட்கள் பாதையும் நிறைவு செய்துவிட்டீர்கள்!';
-    document.getElementById('rm-mark-done').style.display = 'none';
-  } else {
-    const curEntry = RM_ROADMAP.find(e=>e.d===curDay);
-    document.getElementById('rm-current-phase').textContent = RM_PHASE_TA[curEntry.phase] || curEntry.phase;
-    document.getElementById('rm-current-week').textContent = 'வாரம் ' + curEntry.w;
-    document.getElementById('rm-today-day').textContent = 'Day ' + curDay + ' · இன்று';
-    document.getElementById('rm-today-title').textContent = curEntry.t;
-    document.getElementById('rm-mark-done').style.display = 'block';
-    document.getElementById('rm-mark-done').textContent = completed.has(curDay) ? 'முடிந்தது ✓ (தட்டி நீக்கு)' : 'இன்று முடிந்தது ✓';
-  }
-
-  // group by week
-  const weeksList = document.getElementById('rm-weeks-list');
-  weeksList.innerHTML = '';
-  const weekNums = [...new Set(RM_ROADMAP.map(e=>e.w))];
-  weekNums.forEach(w=>{
-    const daysInWeek = RM_ROADMAP.filter(e=>e.w===w);
-    const doneInWeek = daysInWeek.filter(e=>completed.has(e.d)).length;
-    const details = document.createElement('details');
-    details.className = 'rm-week-group';
-    if(daysInWeek.some(e=>e.d===curDay)) details.open = true;
-    const phaseLabel = RM_PHASE_TA[daysInWeek[0].phase] || daysInWeek[0].phase;
-    details.innerHTML = `
-      <summary class="rm-week-summary">
-        <span>வாரம் ${w} · ${phaseLabel}</span>
-        <span class="rm-week-progress">${doneInWeek}/${daysInWeek.length}</span>
-      </summary>
-    `;
-    daysInWeek.forEach(entry=>{
-      const isDone = completed.has(entry.d);
-      const entryDate = rmDateForDay(entry.d).toLocaleDateString(undefined,{day:'numeric', month:'short'});
-      const row = document.createElement('div');
-      row.className = 'rm-day-row' + (isDone ? ' done':'') + (entry.d===curDay ? ' is-today':'');
-      row.innerHTML = `
-        <div class="rm-day-check"><svg viewBox="0 0 10 10" fill="none"><path class="rm-check-path" d="M1 5L4 8L9 1.5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="rm-day-num">Day ${entry.d}<br><span style="opacity:.7">${entryDate}</span></div>
-        <div class="rm-day-title">${entry.t}</div>
-      `;
-      row.addEventListener('click', ()=>{
-        const c = rmGetCompleted();
-        if(c.has(entry.d)) c.delete(entry.d); else c.add(entry.d);
-        rmSaveCompleted(c);
-        renderRoadmap();
-      });
-      details.appendChild(row);
-    });
-    weeksList.appendChild(details);
-  });
-}
-
-document.getElementById('rm-mark-done').addEventListener('click', ()=>{
-  const completed = rmGetCompleted();
-  const curDay = rmCurrentDay(completed);
-  if(curDay >= 1 && curDay <= RM_TOTAL_DAYS){
-    if(completed.has(curDay)) completed.delete(curDay); else completed.add(curDay);
-    rmSaveCompleted(completed);
-    renderRoadmap();
-    if(activeTab === 'day') renderDayView();
-    if(activeTab === 'month') renderMonthGrid();
-  }
-});
 
 
 function switchTab(tab){
@@ -1114,13 +1225,15 @@ function switchTab(tab){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
   document.getElementById('view-month').classList.toggle('active', tab==='month');
   document.getElementById('view-day').classList.toggle('active', tab==='day');
-  document.getElementById('view-roadmap').classList.toggle('active', tab==='roadmap');
+  document.getElementById('view-expense').classList.toggle('active', tab==='expense');
   document.getElementById('month-nav').style.display = tab==='month' ? 'flex':'none';
   document.getElementById('day-nav').style.display = tab==='day' ? 'flex':'none';
-  document.getElementById('fab-add').style.display = tab==='roadmap' ? 'none':'flex';
+  document.getElementById('expense-nav').style.display = tab==='expense' ? 'flex':'none';
+  document.getElementById('fab-add').style.display = (tab==='month'||tab==='day') ? 'flex':'none';
+  document.getElementById('fab-expense').style.display = tab==='expense' ? 'flex':'none';
   if(tab==='month') renderMonthGrid();
   if(tab==='day') renderDayView();
-  if(tab==='roadmap') renderRoadmap();
+  if(tab==='expense') renderExpenseView();
 }
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>switchTab(btn.dataset.tab));
