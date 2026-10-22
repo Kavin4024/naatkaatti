@@ -1323,9 +1323,27 @@ async function checkReminders(){
 
 updateBellUI();
 checkReminders();
-setInterval(checkReminders, 30000);
+setInterval(()=>{ refreshIfNewDay(); checkReminders(); }, 30000);
 // Re-check whenever the app regains focus (covers time spent backgrounded)
-document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) checkReminders(); });
+let lastKnownToday = new Date();
+function refreshIfNewDay(){
+  const now = new Date();
+  if(!isSameDay(now, lastKnownToday)){
+    lastKnownToday = now;
+    monthCursor = new Date(); monthCursor.setHours(0,0,0,0);
+    selectedDate = new Date(); selectedDate.setHours(0,0,0,0);
+    expenseDate = new Date(); expenseDate.setHours(0,0,0,0);
+    updateDailyStreak();
+    if(activeTab==='month') renderMonthGrid();
+    if(activeTab==='day') renderDayView();
+    if(activeTab==='expense') renderExpenseView();
+  }
+}
+document.addEventListener('visibilitychange', ()=>{
+  if(!document.hidden){ refreshIfNewDay(); checkReminders(); }
+});
+window.addEventListener('focus', refreshIfNewDay);
+window.addEventListener('pageshow', refreshIfNewDay);
 
 // ============ Init ============
 renderWeekdayRow();
